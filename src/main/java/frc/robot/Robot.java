@@ -18,12 +18,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import frc.robot.subsystems.SwerveConstants;
 
 public class Robot extends TimedRobot {
 
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
+  private final AutoFactory autofact;
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -36,6 +40,13 @@ public class Robot extends TimedRobot {
             .withCaptureDs(true)
             .withCaptureConsole(true)
     );
+
+    autofact = new AutoFactory(
+      () -> drivetrain.getState().Pose,
+      drivetrain::resetPose, 
+      drivetrain::followTrajectory, 
+      true,
+      drivetrain);
 
     //Teleop Speed Multipliers. Percentages of the max speed.
     double translationSpeedMultiplier = 0.25;
@@ -74,17 +85,34 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // Basic taxi auto.
     // Drives forward at 2 m/s for 1 second.
-    drivetrain.applyRequest(
-      () -> new SwerveRequest.RobotCentric()
-      .withVelocityX(2)
-      .withVelocityY(0)
-      .withRotationalRate(0)
-    ).withTimeout(1).schedule();
+    TestAuto().cmd().schedule();
+    // drivetrain.applyRequest(
+    //   () -> new SwerveRequest.RobotCentric()
+    //   .withVelocityX(2)
+    //   .withVelocityY(0)
+    //   .withRotationalRate(0)
+    // ).withTimeout(1).schedule();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
   }
+
+  public AutoRoutine TestAuto() {
+    AutoRoutine routine = autofact.newRoutine("test");
+
+    // Load the routine's trajectories
+    AutoTrajectory scoreTraj = routine.trajectory("test");
+
+    // When the routine begins, reset odometry and start the first trajectory 
+    routine.active().onTrue(
+        Commands.sequence(
+            scoreTraj.resetOdometry(),
+            scoreTraj.cmd()
+        )
+    );
+    return routine;
+}
 
 }
