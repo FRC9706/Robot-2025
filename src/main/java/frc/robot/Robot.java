@@ -89,9 +89,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // Basic taxi auto.
     // Drives forward at 2 m/s for 1 second.
-    desiredTheta = Math.toDegrees(Math.atan2(driverController.getRightY(), driverController.getRightX()));
-    currentAngle = drivetrain.getCurrentAngle();
-    rotationSpeed = thetaController.calculate(currentAngle, desiredTheta);
     TestAuto().cmd().schedule();
     // drivetrain.applyRequest(
     //   () -> new SwerveRequest.RobotCentric()
@@ -103,6 +100,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    desiredTheta = Math.toDegrees(Math.atan2(driverController.getRightY(), driverController.getRightX()));
+    currentAngle = drivetrain.getCurrentAngle();
+    rotationSpeed = thetaController.calculate(currentAngle, desiredTheta);
     CommandScheduler.getInstance().run();
   }
 
