@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveConstants.CTRESwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
@@ -27,6 +28,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     private boolean hasAppliedOperatorPerspective = false;
+    private static final Pigeon2 pigeon = new Pigeon2(0);
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -42,6 +44,10 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public double getCurrentAngle() {
+        return pigeon.getYaw().getValueAsDouble();
     }
 
     @Override

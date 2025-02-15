@@ -20,6 +20,7 @@ import frc.robot.subsystems.Swerve;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.SwerveConstants;
 
 public class Robot extends TimedRobot {
@@ -27,6 +28,10 @@ public class Robot extends TimedRobot {
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
+  private final PIDController thetaController = new PIDController(1,0,0);
+  private double rotationSpeed;
+  private double desiredTheta;
+  private double currentAngle;
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -61,7 +66,7 @@ public class Robot extends TimedRobot {
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
                 .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
                 .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-                .withRotationalRate(-driverController.getRightX() * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
+                .withRotationalRate(-rotationSpeed * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
         )
     );
 
@@ -84,6 +89,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // Basic taxi auto.
     // Drives forward at 2 m/s for 1 second.
+    desiredTheta = Math.toDegrees(Math.atan2(driverController.getRightY(), driverController.getRightX()));
+    currentAngle = drivetrain.getCurrentAngle();
+    rotationSpeed = thetaController.calculate(currentAngle, desiredTheta);
     TestAuto().cmd().schedule();
     // drivetrain.applyRequest(
     //   () -> new SwerveRequest.RobotCentric()
