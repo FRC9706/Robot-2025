@@ -10,7 +10,6 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -103,13 +102,13 @@ public class Robot extends TimedRobot {
     AutoRoutine routine = autofact.newRoutine("test");
 
     // Load the routine's trajectories
-    AutoTrajectory scoreTraj = routine.trajectory("test");
+    AutoTrajectory reefTraj = routine.trajectory("GoToClosestReef", 0);
 
     // When the routine begins, reset odometry and start the first trajectory 
     routine.active().onTrue(
         Commands.sequence(
-            scoreTraj.resetOdometry(),
-            scoreTraj.cmd()
+            reefTraj.resetOdometry(),
+            reefTraj.cmd()
         )
     );
     return routine;
