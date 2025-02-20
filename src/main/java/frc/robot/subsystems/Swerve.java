@@ -28,7 +28,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     private boolean hasAppliedOperatorPerspective = false;
-    private static final Pigeon2 pigeon = new Pigeon2(0);
+    private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -47,7 +47,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
     public double getCurrentAngle() {
-        return pigeon.getYaw().getValueAsDouble();
+        return pigeon.getRotation2d().getDegrees();
     }
 
     @Override

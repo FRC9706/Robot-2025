@@ -20,7 +20,6 @@ import frc.robot.subsystems.Swerve;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.SwerveConstants;
 
 public class Robot extends TimedRobot {
@@ -28,7 +27,6 @@ public class Robot extends TimedRobot {
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
-  private final PIDController thetaController = new PIDController(1,0,0);
   private double rotationSpeed;
   private double desiredTheta;
   private double currentAngle;
@@ -66,7 +64,7 @@ public class Robot extends TimedRobot {
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
                 .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
                 .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-                .withRotationalRate(-rotationSpeed * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
+                .withRotationalRate(-rotationSpeed * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
         )
     );
 
@@ -99,10 +97,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotInit() {
+  }
+
+  @Override
   public void robotPeriodic() {
-    desiredTheta = Math.toDegrees(Math.atan2(driverController.getRightY(), driverController.getRightX()));
+    desiredTheta = Math.toDegrees(Math.atan2(-driverController.getRightX(), driverController.getRightY()));
     currentAngle = drivetrain.getCurrentAngle();
-    rotationSpeed = thetaController.calculate(currentAngle, desiredTheta);
     CommandScheduler.getInstance().run();
   }
 

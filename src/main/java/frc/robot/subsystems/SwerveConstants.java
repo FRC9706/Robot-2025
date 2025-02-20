@@ -91,7 +91,7 @@ public class SwerveConstants {
     private static final double kFrameLength = 29; // X
 
     // Pigeon
-    private static final int kPigeonId = 13;
+    public static final int kPigeonId = 13;
 
     // Front Left
     private static final int kFrontLeftDriveMotorId = 7;
