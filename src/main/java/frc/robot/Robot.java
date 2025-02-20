@@ -27,9 +27,6 @@ public class Robot extends TimedRobot {
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
-  private double rotationSpeed;
-  private double desiredTheta;
-  private double currentAngle;
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -55,16 +52,18 @@ public class Robot extends TimedRobot {
     double rotationSpeedMultiplier = 0.25;
     double controllerDeadband = 0.1;
 
+    new Rotation2d();
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(
-            () -> new SwerveRequest.FieldCentric()
+            () -> new SwerveRequest.FieldCentricFacingAngle()
                 .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * controllerDeadband * translationSpeedMultiplier)
                 .withRotationalDeadband(SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
                 .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
                 .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-                .withRotationalRate(-rotationSpeed * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
+                .withTargetDirection(Rotation2d.fromDegrees(Math.atan(-(driverController.getRightX() / driverController.getRightY()))))
+                // .withRotationalRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
         )
     );
 
@@ -102,7 +101,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    desiredTheta = Math.toDegrees(Math.atan2(-driverController.getRightX(), driverController.getRightY()));
+    
     CommandScheduler.getInstance().run();
   }
 

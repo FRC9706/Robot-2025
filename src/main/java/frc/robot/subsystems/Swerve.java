@@ -11,6 +11,7 @@ import choreo.trajectory.SwerveSample;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -20,16 +21,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveConstants.CTRESwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
-import com.ctre.phoenix6.hardware.Pigeon2;
+// import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
-    private double currentAngle;
 
     // Rotation values to correctly flip field-relative controls for the driver
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     private boolean hasAppliedOperatorPerspective = false;
-    private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
+    // private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -47,15 +47,15 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public void goToAngle(double DesiredAngle, Swerve drivebase) {
-        currentAngle = pigeon.getRotation2d().getDegrees();
-        drivebase.applyRequest(() -> new SwerveRequest.FieldCentricFacingAngle()
-                                                    .withVelocityX(5)
-                                                    .withVelocityY(0)
-                                                    .withHeadingPID(DesiredAngle, DesiredAngle, DesiredAngle)
-                                                    .withTargetDirection());
+    // public void goToAngle(double DesiredAngle, Swerve drivebase) {
+    //     drivebase.applyRequest(() -> new SwerveRequest.FieldCentricFacingAngle()
+    //                                                 .withCenterOfRotation(Translation2d.kZero)
+    //                                                 .withVelocityX(5)
+    //                                                 .withVelocityY(0)
+    //                                                 .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
+    //                                                 .withTargetDirection(Rotation2d.fromDegrees(DesiredAngle)));
 
-    }
+    // }
 
     @Override
     public void periodic() {
