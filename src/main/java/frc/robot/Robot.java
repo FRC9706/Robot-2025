@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
                 .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
                 .withTargetDirection(Rotation2d.fromDegrees(Math.atan(-(driverController.getRightX() / driverController.getRightY()))))
                 .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
+                .withTargetRateFeedforward(SwerveConstants.HeadingFF)
                 // .withRotationalRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
         )
     );

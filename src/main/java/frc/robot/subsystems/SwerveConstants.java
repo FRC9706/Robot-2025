@@ -30,6 +30,7 @@ public class SwerveConstants {
         public static final double HeadingControlkP = 0.5;
         public static final double HeadingControlkI = 0;
         public static final double HeadingControlkD = 0.1;
+        public static final double HeadingFF = 5;
 
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
     private static final SteerMotorArrangement kSteerMotorType = SteerMotorArrangement.TalonFX_Integrated;
