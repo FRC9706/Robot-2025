@@ -103,7 +103,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     desiredTheta = Math.toDegrees(Math.atan2(-driverController.getRightX(), driverController.getRightY()));
-    currentAngle = drivetrain.getCurrentAngle(); 
     CommandScheduler.getInstance().run();
   }
 

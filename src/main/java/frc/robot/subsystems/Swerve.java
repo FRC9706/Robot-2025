@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
+    private double currentAngle;
 
     // Rotation values to correctly flip field-relative controls for the driver
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -46,8 +47,14 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public double getCurrentAngle() {
-        return pigeon.getRotation2d().getDegrees();
+    public void goToAngle(double DesiredAngle, Swerve drivebase) {
+        currentAngle = pigeon.getRotation2d().getDegrees();
+        drivebase.applyRequest(() -> new SwerveRequest.FieldCentricFacingAngle()
+                                                    .withVelocityX(5)
+                                                    .withVelocityY(0)
+                                                    .withHeadingPID(DesiredAngle, DesiredAngle, DesiredAngle)
+                                                    .withTargetDirection());
+
     }
 
     @Override
