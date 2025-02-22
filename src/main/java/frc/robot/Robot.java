@@ -1,25 +1,27 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import frc.robot.subsystems.SwerveConstants;
 
 public class Robot extends TimedRobot {
@@ -31,6 +33,16 @@ public class Robot extends TimedRobot {
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
 
+
+  private double NonZeroRad(double x, double y) {
+    double radians;
+    radians = Math.atan2(y, x);
+    return radians;
+  }
+
+  /**
+   * 
+   */
   public Robot() {
 
     // Configure DogLog
@@ -53,21 +65,36 @@ public class Robot extends TimedRobot {
     double controllerDeadband = 0.1;
 
     new Rotation2d();
+    SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI/2);
+    // Drive command
+    final SwerveRequest.FieldCentricFacingAngle snapDrive = new SwerveRequest.FieldCentricFacingAngle()
+      .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
+      .withDriveRequestType(DriveRequestType.Velocity);
+    snapDrive.HeadingController = new PhoenixPIDController(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD);
+    snapDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(
-            () -> new SwerveRequest.FieldCentricFacingAngle()
-                .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * controllerDeadband * translationSpeedMultiplier)
+        drivetrain.applyRequest(() -> snapDrive
+              .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(driverController.getRightY(), -driverController.getRightX()) + Math.PI/2))))
+              .withTargetRateFeedforward(SwerveConstants.HeadingFF)
+              )
+          /*   () -> new SwerveRequest.FieldCentricFacingAngle()
+                .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
                 .withRotationalDeadband(SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-                .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-                .withTargetDirection(Rotation2d.fromDegrees(Math.atan(-(driverController.getRightX() / driverController.getRightY()))))
-                .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
+                .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+                .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+                .withTargetDirection(Rotation2d.fromDegrees(NonZeroRad(-driverController.getRightX(), -driverController.getRightY())))
                 .withTargetRateFeedforward(SwerveConstants.HeadingFF)
+                .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
                 // .withRotationalRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
-        )
-    );
+            */
+            
+        );
+      
 
     // Button to reset the field-relative rotation to 0 degrees. Face the robot away
     // from the driver station wall when pressing.

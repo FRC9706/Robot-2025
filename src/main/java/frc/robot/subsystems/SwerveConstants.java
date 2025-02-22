@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.*;
 
 public class SwerveConstants {
@@ -27,10 +29,11 @@ public class SwerveConstants {
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
     // Gains for modified angle positioning controller
-        public static final double HeadingControlkP = 0.5;
+        public static final double HeadingControlkP = 5;
         public static final double HeadingControlkI = 0;
         public static final double HeadingControlkD = 0.1;
-        public static final double HeadingFF = 5;
+        public static final double HeadingFF = new SimpleMotorFeedforward(0.1,1.91,0).calculate(.25);
+        // RECALC: Kv: 2.48, kA 0.07, kS 0.5
 
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
     private static final SteerMotorArrangement kSteerMotorType = SteerMotorArrangement.TalonFX_Integrated;
