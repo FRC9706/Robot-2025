@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveConstants.CTRESwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
@@ -30,6 +31,12 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     private boolean hasAppliedOperatorPerspective = false;
     // private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
+
+    // Limelight Variables
+    private boolean v;
+    private double x;
+    private double y;
+    private double a;
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -139,5 +146,27 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    public void goToLimelight() {
+        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName);
+        if (a < 0.5){
+            v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
+            y = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+            x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+            {
+                if (v == true) {
+                    this.setControl(new SwerveRequest.FieldCentric()
+                        .withVelocityX(-x * 0.1)
+                        .withVelocityY(-y * 0.1)
+                        .withRotationalRate(0));
+                } else if (v == false) {
+                    this.setControl(new SwerveRequest.FieldCentric()
+                        .withVelocityX(0)
+                        .withVelocityY(0)
+                        .withRotationalRate(0.1));
+                }
+            }
+        }
     }
 }

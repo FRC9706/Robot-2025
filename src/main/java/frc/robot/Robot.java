@@ -101,6 +101,10 @@ public class Robot extends TimedRobot {
         )
     );
 
+    driverController.x().onTrue(
+      Commands.runOnce(() -> drivetrain.goToLimelight(), drivetrain)
+    );
+
   }
 
   @Override
