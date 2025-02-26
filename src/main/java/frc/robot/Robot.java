@@ -22,13 +22,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.SwerveConstants;
+import frc.robot.subsystems.Limelight;
 
 public class Robot extends TimedRobot {
 
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
+  private final Limelight limelight = new Limelight();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -102,7 +103,9 @@ public class Robot extends TimedRobot {
     );
 
     driverController.x().onTrue(
-      Commands.runOnce(() -> drivetrain.goToLimelight(), drivetrain)
+        Commands.run(() -> {
+            drivetrain.goToLimelight();
+        }, drivetrain).until(() -> limelight.getA() > 0.5)
     );
 
   }
@@ -122,6 +125,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    // Set the Limelight to the AprilTag pipeline
+    limelight.setAprilTagPipeline();
   }
 
   @Override

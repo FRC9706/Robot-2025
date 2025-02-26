@@ -19,10 +19,11 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.SwerveConstants.CTRESwerveDrivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.DetectorConstants;
 import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
+import frc.robot.SwerveConstants.CTRESwerveDrivetrain;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
@@ -149,23 +150,20 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
     public void goToLimelight() {
-        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName);
-        if (a < 0.5){
-            v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
-            y = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
-            x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
-            {
-                if (v == true) {
-                    this.setControl(new SwerveRequest.FieldCentric()
-                        .withVelocityX(-x * 0.1)
-                        .withVelocityY(-y * 0.1)
-                        .withRotationalRate(0));
-                } else if (v == false) {
-                    this.setControl(new SwerveRequest.FieldCentric()
-                        .withVelocityX(0)
-                        .withVelocityY(0)
-                        .withRotationalRate(0.1));
-                }
+        v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
+        y = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+        x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+        {
+            if (v == true) {
+                this.setControl(new SwerveRequest.FieldCentric()
+                    .withVelocityX(-x * 0.1)
+                    .withVelocityY(-y * 0.1)
+                    .withRotationalRate(0));
+            } else if (v == false) {
+                this.setControl(new SwerveRequest.FieldCentric()
+                    .withVelocityX(0)
+                    .withVelocityY(0)
+                    .withRotationalRate(0.1));
             }
         }
     }

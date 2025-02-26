@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.*;
+import frc.robot.subsystems.Swerve;
 
 public class SwerveConstants {
 
