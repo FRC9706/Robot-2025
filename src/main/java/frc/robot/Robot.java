@@ -33,13 +33,6 @@ public class Robot extends TimedRobot {
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
 
-
-  private double NonZeroRad(double x, double y) {
-    double radians;
-    radians = Math.atan2(y, x);
-    return radians;
-  }
-
   /**
    * 
    */
@@ -61,7 +54,6 @@ public class Robot extends TimedRobot {
 
     //Teleop Speed Multipliers. Percentages of the max speed.
     double translationSpeedMultiplier = 0.25;
-    double rotationSpeedMultiplier = 0.25;
     double controllerDeadband = 0.1;
 
     new Rotation2d();
