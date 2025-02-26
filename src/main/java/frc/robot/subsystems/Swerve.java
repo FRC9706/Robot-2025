@@ -37,7 +37,6 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     private boolean v;
     private double x;
     private double y;
-    private double a;
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
