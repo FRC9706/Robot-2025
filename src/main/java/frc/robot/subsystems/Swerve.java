@@ -37,6 +37,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     private boolean v;
     private double x;
     private double a;
+    private double s;
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -152,17 +153,18 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
         a = LimelightHelpers.getTA(DetectorConstants.kLimelightName);
         x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+        s = LimelightHelpers.getTS(DetectorConstants.kLimelightName);
         {
             if (v == true) {
                 this.setControl(new SwerveRequest.FieldCentric()
                     .withVelocityX(x * 0.1)
                     .withVelocityY(a * 0.1)
-                    .withRotationalRate(0));
+                    .withRotationalRate(s * 0.1));
             } else if (a > 0.15) {
                 this.setControl(new SwerveRequest.FieldCentric()
                 .withVelocityX(0)
                 .withVelocityY(0)
-                .withRotationalRate(0)); 
+                .withRotationalRate(s * 0.1)); 
             } else if (v == false) {
                 this.setControl(new SwerveRequest.FieldCentric()
                     .withVelocityX(0)

@@ -980,6 +980,10 @@ public class LimelightHelpers {
         return getLimelightNTDouble(limelightName, "ta");
     }
 
+    public static double getTS(String limelightName) {
+        return getLimelightNTDouble(limelightName, "ts");
+    }
+
     /**
      * T2D is an array that contains several targeting metrcis
      * @param limelightName Name of the Limelight camera
