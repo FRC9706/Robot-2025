@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Arm;
 
 public class Robot extends TimedRobot {
 
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
   private final Limelight limelight = new Limelight();
+  private final Arm arm = new Arm();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -109,6 +111,16 @@ public class Robot extends TimedRobot {
             }
         )
     );
+
+    driverController.leftTrigger().onTrue(
+      Commands.run(() -> 
+        arm.goToPosition1()
+    ));
+
+    driverController.rightTrigger().onTrue(
+      Commands.run(() -> 
+        arm.goToPosition2()
+    ));
 
   }
 
