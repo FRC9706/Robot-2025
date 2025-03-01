@@ -22,6 +22,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.SwerveConstants;
+import frc.robot.subsystems.Limelight;
 
 public class Robot extends TimedRobot {
 
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
   private double rotationSpeed;
   private double desiredTheta;
   private double currentAngle;
+
+  private final Limelight limelight = new Limelight();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -81,6 +84,12 @@ public class Robot extends TimedRobot {
               return alliance == Alliance.Blue;
             }
         )
+    );
+
+    driverController.x().onTrue(
+        Commands.run(() -> {
+            drivetrain.goToLimelight();
+        }, drivetrain).until(() -> limelight.getA() > 0.5)
     );
 
   }
