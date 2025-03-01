@@ -53,6 +53,14 @@ public class Robot extends TimedRobot {
       true,
       drivetrain);
 
+      driverController.x().whileTrue(
+        Commands.run(() -> {
+            // Keep moving
+            drivetrain.goToLimelight();
+        }, drivetrain)
+    );
+    
+
     //Teleop Speed Multipliers. Percentages of the max speed.
     double translationSpeedMultiplier = 0.25;
     double controllerDeadband = 0.1;
@@ -100,12 +108,6 @@ public class Robot extends TimedRobot {
               return alliance == Alliance.Blue;
             }
         )
-    );
-
-    driverController.x().onTrue(
-        Commands.run(() -> {
-            drivetrain.goToLimelight();
-        }, drivetrain).until(() -> limelight.getA() > 0.5)
     );
 
   }

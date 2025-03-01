@@ -36,7 +36,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     // Limelight Variables
     private boolean v;
     private double x;
-    private double y;
+    private double a;
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -150,19 +150,25 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
     public void goToLimelight() {
         v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
-        y = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName);
         x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
         {
             if (v == true) {
                 this.setControl(new SwerveRequest.FieldCentric()
-                    .withVelocityX(-x * 0.1)
-                    .withVelocityY(-y * 0.1)
+                    .withVelocityX(x * 0.1)
+                    .withVelocityY(a * 0.1)
                     .withRotationalRate(0));
+            } else if (a > 0.15) {
+                this.setControl(new SwerveRequest.FieldCentric()
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withRotationalRate(0)); 
             } else if (v == false) {
                 this.setControl(new SwerveRequest.FieldCentric()
                     .withVelocityX(0)
                     .withVelocityY(0)
                     .withRotationalRate(0.1));
+                System.out.println("I dont see anything bruh");
             }
         }
     }
