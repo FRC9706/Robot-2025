@@ -36,6 +36,29 @@ public class Robot extends TimedRobot {
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
 
+  // Theta Controller lastvals, janky solution but im still praying it works
+  private double valx;
+  private double LastValY = 0;
+  private double LastValX = 0;
+  private double valy;
+  private double getLastThetaControllerInputX() {
+    valx = driverController.getRightX();
+    if (Math.abs(valx) < 0.05) {
+      return LastValX;
+    } else {
+      LastValX = valx;
+      return valx;
+    }
+  }
+  private double getLastThetaControllerInputY() {
+    valy = driverController.getRightY();
+    if (Math.abs(valy) < 0.05) {
+      return LastValY;
+    } else {
+      LastValY = valy;
+      return valy;
+    }
+  }
   /**
    * 
    */
@@ -81,7 +104,7 @@ public class Robot extends TimedRobot {
         drivetrain.applyRequest(() -> snapDrive
               .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
               .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-              .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(driverController.getRightY(), -driverController.getRightX()) + Math.PI/2))))
+              .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(getLastThetaControllerInputY(), -getLastThetaControllerInputX()) + Math.PI/2))))
               .withTargetRateFeedforward(SwerveConstants.HeadingFF)
               )
           /*   () -> new SwerveRequest.FieldCentricFacingAngle()

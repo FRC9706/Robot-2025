@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import choreo.trajectory.SwerveSample;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.DetectorConstants;
 import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
@@ -150,28 +150,28 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
     public void goToLimelight() {
-        v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
-        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName);
+        v = LimelightHelpers.getTV(DetectorConstants.kLimelightName); 
+        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName); 
         x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
-        s = LimelightHelpers.getTS(DetectorConstants.kLimelightName);
-        {
-            if (v == true) {
-                this.setControl(new SwerveRequest.FieldCentric()
-                    .withVelocityX(x * 0.1)
-                    .withVelocityY(a * 0.1)
-                    .withRotationalRate(s * 0.1));
-            } else if (a > 0.15) {
-                this.setControl(new SwerveRequest.FieldCentric()
+        s = LimelightHelpers.getTS(DetectorConstants.kLimelightName); 
+        final double DEADZONE = 0.05;
+        final double STRAFE_MULTIPLIER = 0.1;
+        final double FORWARD_MULTIPLIER = 0.1;
+        final double ROTATION_MULTIPLIER = 0.1;
+        if (v) {
+            double strafe = Math.abs(x) > DEADZONE ? -x * STRAFE_MULTIPLIER : 0;  
+            double forward = a < 0.2 ? FORWARD_MULTIPLIER : 0; 
+            double rotation = Math.abs(s) > DEADZONE ? s * ROTATION_MULTIPLIER : 0;  
+            this.setControl(new SwerveRequest.FieldCentric()
+                .withVelocityX(forward)
+                .withVelocityY(strafe)  
+                .withRotationalRate(rotation));  
+        } else {
+            this.setControl(new SwerveRequest.FieldCentric()
                 .withVelocityX(0)
                 .withVelocityY(0)
-                .withRotationalRate(s * 0.1)); 
-            } else if (v == false) {
-                this.setControl(new SwerveRequest.FieldCentric()
-                    .withVelocityX(0)
-                    .withVelocityY(0)
-                    .withRotationalRate(0.1));
-                System.out.println("I dont see anything bruh");
-            }
+                .withRotationalRate(0.1));
+            System.out.println("I don't see anything bruh");
         }
     }
 }
