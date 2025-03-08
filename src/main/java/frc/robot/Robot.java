@@ -11,11 +11,14 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Swerve;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -92,11 +95,26 @@ public class Robot extends TimedRobot {
     //   .withRotationalRate(0)
     // ).withTimeout(1).schedule();
   }
+  private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
+@Override
+public void robotPeriodic() {
+  driverController.x().onTrue(new InstantCommand(() -> moveToAprilTag()));
+  CommandScheduler.getInstance().run();
+}
+
+public void moveToAprilTag() {
+  double steeringAdj = limelightSubsystem.getSteerAdj();
+  double distanceAdj = limelightSubsystem.getDistanceAdj();
+  // make steering adjustment to (hopefully) rotate the robot
+  drivetrain.applyRequest(
+      () -> new SwerveRequest.FieldCentric()
+          .withVelocityX(0) // No movement in the x direction cuz lazy (idk how)
+          .withVelocityY(distanceAdj) // Move towards the tag (adjust distance)
+          .withRotationalRate(steeringAdj) // Rotate to center the tag
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+  );
+}
 
   public AutoRoutine TestAuto() {
     AutoRoutine routine = autofact.newRoutine("test");
