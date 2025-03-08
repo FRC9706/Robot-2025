@@ -81,9 +81,14 @@ public class Robot extends TimedRobot {
       driverController.x().whileTrue(
         Commands.run(() -> {
             // Keep moving
-            drivetrain.goToLimelight();
-        }, drivetrain)
-    );
+            drivetrain.goToLimelight(driverController::getLeftX);
+        }, drivetrain
+        ));
+
+      driverController.x().onFalse(
+        Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric().withRotationalRate(0).withVelocityX(0)))
+      );
+
     
 
     //Teleop Speed Multipliers. Percentages of the max speed.
@@ -91,7 +96,7 @@ public class Robot extends TimedRobot {
     double controllerDeadband = 0.1;
 
     new Rotation2d();
-    SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI/2);
+    SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI);
     // Drive command
     final SwerveRequest.FieldCentricFacingAngle snapDrive = new SwerveRequest.FieldCentricFacingAngle()
       .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
@@ -116,7 +121,8 @@ public class Robot extends TimedRobot {
                 .withTargetDirection(Rotation2d.fromDegrees(NonZeroRad(-driverController.getRightX(), -driverController.getRightY())))
                 .withTargetRateFeedforward(SwerveConstants.HeadingFF)
                 .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
-                // .withRotationalRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
+                // .withRotationa
+                lRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
             */
             
         );

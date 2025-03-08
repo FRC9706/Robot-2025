@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
@@ -9,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.trajectory.SwerveSample;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,10 +37,9 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     // private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
 
     // Limelight Variables
-    private boolean v;
-    private double x;
-    private double a;
-    private double s;
+    private boolean hasTarget;
+    private double tX;
+    private double tA;
 
     // Subsystem Constructor
     public Swerve(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -149,29 +151,33 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public void goToLimelight() {
-        v = LimelightHelpers.getTV(DetectorConstants.kLimelightName); 
-        a = LimelightHelpers.getTA(DetectorConstants.kLimelightName); 
-        x = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
-        s = LimelightHelpers.getTS(DetectorConstants.kLimelightName); 
-        final double DEADZONE = 0.05;
-        final double STRAFE_MULTIPLIER = 0.1;
-        final double FORWARD_MULTIPLIER = 0.1;
-        final double ROTATION_MULTIPLIER = 0.1;
-        if (v) {
-            double strafe = Math.abs(x) > DEADZONE ? -x * STRAFE_MULTIPLIER : 0;  
-            double forward = a < 0.2 ? FORWARD_MULTIPLIER : 0; 
-            double rotation = Math.abs(s) > DEADZONE ? s * ROTATION_MULTIPLIER : 0;  
-            this.setControl(new SwerveRequest.FieldCentric()
-                .withVelocityX(forward)
-                .withVelocityY(strafe)  
-                .withRotationalRate(rotation));  
-        } else {
-            this.setControl(new SwerveRequest.FieldCentric()
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withRotationalRate(0.1));
-            System.out.println("I don't see anything bruh");
+    public void goToLimelight(DoubleSupplier xVelSupplier) {
+        hasTarget = LimelightHelpers.getTV(DetectorConstants.kLimelightName); 
+        tX = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+        tA = LimelightHelpers.getTA(DetectorConstants.kLimelightName); 
+        
+        if(Math.abs(tX) < 1.5) {
+            tX = 0;
         }
+
+        if(Math.abs(tA - 14) < 0.5){
+            tA = 14;
+        }
+
+        double kPR = 0.05;
+        double kPT = 0.05;
+
+        SmartDashboard.putNumber("Test", xVelSupplier.getAsDouble());
+
+        if(hasTarget){
+            this.setControl(
+                new SwerveRequest.RobotCentric().withVelocityY(xVelSupplier.getAsDouble()).withRotationalRate(-MathUtil.clamp(tX * kPR, -1, 1)).withVelocityX(-MathUtil.clamp((tA-14) * kPT, -1, 1))
+            );
+        }else{
+            this.setControl(
+                new SwerveRequest.RobotCentric().withRotationalRate(0).withVelocityX(0).withVelocityX(0)
+            ); 
+        }
+
     }
 }
