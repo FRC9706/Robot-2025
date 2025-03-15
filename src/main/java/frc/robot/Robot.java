@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -141,14 +142,34 @@ public class Robot extends TimedRobot {
         )
     );
 
+    driverController.y().onTrue(
+      Commands.runOnce(() -> {
+        // Toggle the state of ArmConstants.isOn
+        ArmConstants.isOn = !ArmConstants.isOn;
+        
+        // If ArmConstants.isOn is true, move the arm to position 5
+        if (ArmConstants.isOn) {
+          arm.goPosition(10);
+          System.out.println("Arm is now on");
+        } else {
+          double pos = arm.getPos();
+          System.out.println("Arm is now off, current postion is at:" + pos);
+          arm.stopMotor();
+        }
+      })
+    );
+    
+    
+
+
     driverController.leftTrigger().onTrue(
       Commands.run(() -> 
-        arm.goToPosition1()
+        System.out.println("brocken")
     ));
 
     driverController.rightTrigger().onTrue(
       Commands.run(() -> 
-        arm.goToPosition2()
+      System.out.println("brocken")
     ));
 
   }
@@ -179,6 +200,7 @@ public class Robot extends TimedRobot {
   }
 
   public AutoRoutine TestAuto() {
+
     AutoRoutine routine = autofact.newRoutine("test");
 
     // Load the routine's trajectories
