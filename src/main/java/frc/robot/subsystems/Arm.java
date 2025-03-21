@@ -42,6 +42,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,14 +52,14 @@ public class Arm extends SubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless);
     private final RelativeEncoder encoder = motor.getEncoder();
     private final SparkClosedLoopController cloop = motor.getClosedLoopController();
-    private static final double TOLERANCE = 0.01; // Acceptable error in rotations
+    private static final double TOLERANCE = 0.001; // Acceptable error in rotations
 
     public Arm() {
         encoder.setPosition(0);
     }
 
-    public void setTargetRotations(double rotations) {
-        cloop.setReference(rotations, SparkMax.ControlType.kPosition);
+    public void setTargetRotations(double pos) {
+        cloop.setReference(pos, SparkMax.ControlType.kPosition);
     }
 
     public boolean isAtTarget(double target) {

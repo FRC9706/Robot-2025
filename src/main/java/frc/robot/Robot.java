@@ -14,19 +14,22 @@ public class Robot extends TimedRobot {
 
   public Robot() {
 
-    driverController.leftTrigger().onTrue(
-      Commands.sequence(
-        Commands.runOnce(() -> arm.setTargetRotations(-armTravelRots)),
-        Commands.waitUntil(() -> arm.isAtTarget(-armTravelRots)),
-        Commands.runOnce(arm::stop)
-      ));
+    // driverController.leftTrigger().onTrue(
+    //   Commands.sequence(
+    //     Commands.runOnce(() -> arm.setTargetRotations(-armTravelRots)),
+    //     Commands.waitUntil(() -> arm.isAtTarget(-armTravelRots)),
+    //     Commands.runOnce(arm::stop)
+    //   ));
 
-    driverController.rightTrigger().onTrue(
-      Commands.sequence(
-        Commands.runOnce(() -> arm.setTargetRotations(armTravelRots)),
-        Commands.waitUntil(() -> arm.isAtTarget(armTravelRots)),
-        Commands.runOnce(arm::stop)
-      ));
+    // driverController.rightTrigger().onTrue(
+    //   Commands.sequence(
+    //     Commands.runOnce(() -> arm.setTargetRotations(armTravelRots)),
+    //     Commands.waitUntil(() -> arm.isAtTarget(armTravelRots)),
+    //     Commands.runOnce(arm::stop)
+    //   ));
+
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetRotations(2*Math.PI)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetRotations(-2*Math.PI)));
 
   }
 
