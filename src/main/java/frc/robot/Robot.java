@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
     //     Commands.runOnce(arm::stop)
     //   ));
 
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetRotations(2*Math.PI)));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetRotations(-2*Math.PI)));
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(50)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(-50)));
 
   }
 

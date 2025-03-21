@@ -52,25 +52,12 @@ public class Arm extends SubsystemBase {
     private final SparkMax motor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless);
     private final RelativeEncoder encoder = motor.getEncoder();
     private final SparkClosedLoopController cloop = motor.getClosedLoopController();
-    private static final double TOLERANCE = 0.001; // Acceptable error in rotations
 
     public Arm() {
         encoder.setPosition(0);
     }
 
-    public void setTargetRotations(double pos) {
+    public void setTargetCentPos(double pos) {
         cloop.setReference(pos, SparkMax.ControlType.kPosition);
-    }
-
-    public boolean isAtTarget(double target) {
-        return Math.abs(encoder.getPosition() - target) < TOLERANCE;
-    }
-
-    public void stop() {
-        motor.set(0);
-    }
-
-    public double getEncoderPosition() {
-        return encoder.getPosition();
     }
 }

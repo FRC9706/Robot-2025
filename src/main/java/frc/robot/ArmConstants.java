@@ -2,9 +2,10 @@ package frc.robot;
 
 public class ArmConstants {
     public static final int kArmMotorID = 13;
-    public static final double kArmPgain = 0.00002;
-    public static final double kArmIgain = 0.0000001;
-    public static final double kArmDgain = 0.0001;
+    public static final double kArmPgain = 0.065;
+    public static final double kArmIgain = 0;
+    public static final double kArmDgain = 0.01;
+    public static final double kArmFFGain = 0.000003;
     public static final double kArmPositionConversionFactor = 64/12;
     public static final double kArmVelocityConversionFactor = 64/12;
     public static final boolean kInverted = true;
