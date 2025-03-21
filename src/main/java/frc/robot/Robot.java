@@ -7,6 +7,7 @@ import frc.robot.subsystems.Arm;
 
 public class Robot extends TimedRobot {
   private final Arm arm = new Arm();
+  private final double armTravelRots = 0.75;
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -14,14 +15,18 @@ public class Robot extends TimedRobot {
   public Robot() {
 
     driverController.leftTrigger().onTrue(
-      Commands.run(() -> 
-        arm.goToPosition1()
-    ));
+      Commands.sequence(
+        Commands.runOnce(() -> arm.setTargetRotations(-armTravelRots)),
+        Commands.waitUntil(() -> arm.isAtTarget(-armTravelRots)),
+        Commands.runOnce(arm::stop)
+      ));
 
     driverController.rightTrigger().onTrue(
-      Commands.run(() -> 
-        arm.goToPosition2()
-    ));
+      Commands.sequence(
+        Commands.runOnce(() -> arm.setTargetRotations(armTravelRots)),
+        Commands.waitUntil(() -> arm.isAtTarget(armTravelRots)),
+        Commands.runOnce(arm::stop)
+      ));
 
   }
 
