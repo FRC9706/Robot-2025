@@ -29,7 +29,7 @@ import frc.robot.subsystems.Arm;
 public class Robot extends TimedRobot {
 
   // Drivetrain Subsystem
-  private final Swerve drivetrain = SwerveConstants.createDrivetrain();
+  private final Swerve drivetrain = Constants.createDrivetrain();
   private final AutoFactory autofact;
   private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
 
     
 
-    //Teleop Speed Multipliers. Percentages of the max speed.
+    //Teleop Speed Multipliers. Percentages of the max speed. 
     double translationSpeedMultiplier = 0.25;
     double controllerDeadband = 0.1;
 
@@ -100,30 +100,30 @@ public class Robot extends TimedRobot {
     SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI);
     // Drive command
     final SwerveRequest.FieldCentricFacingAngle snapDrive = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
+      .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
       .withDriveRequestType(DriveRequestType.Velocity);
-    snapDrive.HeadingController = new PhoenixPIDController(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD);
+    snapDrive.HeadingController = new PhoenixPIDController(Constants.HeadingControlkP, Constants.HeadingControlkI, Constants.HeadingControlkD);
     snapDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(() -> snapDrive
-              .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-              .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withVelocityX(-driverController.getLeftY() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withVelocityY(-driverController.getLeftX() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
               .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(getLastThetaControllerInputY(), -getLastThetaControllerInputX()) + Math.PI/2))))
-              .withTargetRateFeedforward(SwerveConstants.HeadingFF)
+              .withTargetRateFeedforward(Constants.HeadingFF)
               )
           /*   () -> new SwerveRequest.FieldCentricFacingAngle()
-                .withDeadband(SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
-                .withRotationalDeadband(SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
+                .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
+                .withRotationalDeadband(Constants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-driverController.getLeftY() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-                .withVelocityY(-driverController.getLeftX() * SwerveConstants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+                .withVelocityX(-driverController.getLeftY() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+                .withVelocityY(-driverController.getLeftX() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
                 .withTargetDirection(Rotation2d.fromDegrees(NonZeroRad(-driverController.getRightX(), -driverController.getRightY())))
-                .withTargetRateFeedforward(SwerveConstants.HeadingFF)
-                .withHeadingPID(SwerveConstants.HeadingControlkP, SwerveConstants.HeadingControlkI, SwerveConstants.HeadingControlkD)
+                .withTargetRateFeedforward(Constants.HeadingFF)
+                .withHeadingPID(Constants.HeadingControlkP, Constants.HeadingControlkI, Constants.HeadingControlkD)
                 // .withRotationa
-                lRate(-driverController.getRightX() * 0.2 * SwerveConstants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
+                lRate(-driverController.getRightX() * 0.2 * Constants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
             */
             
         );

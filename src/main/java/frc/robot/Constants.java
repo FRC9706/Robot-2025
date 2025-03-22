@@ -13,7 +13,27 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.*;
 import frc.robot.subsystems.Swerve;
 
-public class SwerveConstants {
+public class Constants {
+
+        // DETECTOR
+
+        public static final String kLimelightName = "limelight";
+        public static final int kAprilTagPiplineNumber = 1;
+
+        // ARM
+
+        public static final int kArmMotorID = 13;
+        public static final double kArmPgain = 0.065;
+        public static final double kArmIgain = 0;
+        public static final double kArmDgain = 0.01;
+        public static final double kArmFFGain = 0.000003;
+        public static final double kArmPositionConversionFactor = 64/12;
+        public static final double kArmVelocityConversionFactor = 64/12;
+        public static final boolean kInverted = true;
+        public static final double kArmPosition1 = 0;
+        public static final double kArmPosition2 = 0.15;
+
+        // Swerve
 
     // PID Values for the Steering Motors
     private static final Slot0Configs steerGains = new Slot0Configs()

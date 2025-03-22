@@ -6,10 +6,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ArmConstants;
+import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(ArmConstants.kArmMotorID, MotorType.kBrushless);
+    private final SparkMax motor = new SparkMax(Constants.kArmMotorID, MotorType.kBrushless);
     private final RelativeEncoder encoder = motor.getEncoder();
     private final SparkClosedLoopController cloop = motor.getClosedLoopController();
 
