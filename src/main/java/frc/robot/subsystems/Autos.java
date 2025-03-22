@@ -10,18 +10,27 @@ public class Autos extends SubsystemBase {
 
     private final AutoFactory autofact;
     private final Swerve drivetrain = Constants.createDrivetrain();
+    private final Arm arm = new Arm();
 
     public Autos() {
         autofact = new AutoFactory(() -> drivetrain.getState().Pose, drivetrain::resetPose, drivetrain::followTrajectory, true, drivetrain);
     }
 
-    public AutoRoutine PGB1() {
-        AutoRoutine routine = autofact.newRoutine("test");
-        AutoTrajectory reefTraj = routine.trajectory("PutAndGetBlu1", 0);
+    public AutoRoutine A1(String name) {
+        AutoRoutine routine = autofact.newRoutine(name);
+        AutoTrajectory GoToReef = routine.trajectory(name, 0);
+        AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
         routine.active().onTrue(
             Commands.sequence(
-                reefTraj.resetOdometry(),
-                reefTraj.cmd()
+                GoToReef.resetOdometry(),
+                GoToReef.cmd(),
+                Commands.runOnce(() -> arm.AutoGoPos2()),
+                Commands.runOnce(() -> Intout.AutoOuttake()),
+                Commands.waitSeconds(Constants.AutoOuttakeWaitTime),
+                GoToFeeder.resetOdometry(),
+                GoToFeeder.cmd(),
+                Commands.runOnce(() -> arm.AutoGoPos1()),
+                Commands.runOnce(() -> Intout.AutoIntake())
             )
         );
         return routine;

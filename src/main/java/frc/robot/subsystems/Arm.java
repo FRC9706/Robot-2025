@@ -20,4 +20,12 @@ public class Arm extends SubsystemBase {
     public void setTargetCentPos(double pos) {
         cloop.setReference(pos, SparkMax.ControlType.kPosition);
     }
+
+    public void AutoGoPos1() {
+        setTargetCentPos(Constants.kArmPos1);
+    }
+
+    public void AutoGoPos2() {
+        setTargetCentPos(Constants.kArmPos2);
+    }
 }

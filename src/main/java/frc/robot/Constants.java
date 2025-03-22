@@ -14,6 +14,9 @@ import edu.wpi.first.units.measure.*;
 import frc.robot.subsystems.Swerve;
 
 public class Constants {
+        // AUTONOMOUS
+
+        public static final int AutoOuttakeWaitTime = 2; // seconds
 
         // CLIMB
 
@@ -23,8 +26,12 @@ public class Constants {
         // INTAKE/OUTTAKE
 
         public static final int kIntakeMotorID = 14;
+        public static final boolean kMotorReversed = false;
+        // literally the dumbest constant I have ever had to code
+        public static final int one = kMotorReversed ? -1 : 1;
         public static final int kShootDuration = 2;
         public static final int kIntakeDuration = 2;
+        public static final int kIntakeLimitSwitchID = 0;
 
         // DETECTOR
 
@@ -34,6 +41,8 @@ public class Constants {
         // ARM
 
         public static final int kArmMotorID = 13;
+        public static final int kArmPos1 = 0; // encoder counts
+        public static final int kArmPos2 = 50; // encoder counts
         // rest of these are just reminders, NOT USED
         public static final double kArmPgain = 0.065;
         public static final double kArmIgain = 0;

@@ -1,9 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-
 import static edu.wpi.first.units.Units.FeetPerSecond;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import dev.doglog.DogLog;
@@ -37,7 +35,7 @@ public class Robot extends TimedRobot {
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
 
-  // Theta Controller lastvals, janky solution but im still praying it works
+  // Theta Controller lastvals, janky solution but it works
   private double valx;
   private double LastValY = 0;
   private double LastValX = 0;
@@ -148,7 +146,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // PGB: Put and Get Blue position: puts a preloaded coral in L1, then drives to the loader. Unifnished auto
-    autos.PGB1().cmd().schedule();
+    autos.A1("PGB1").cmd().schedule();
         // drivetrain.applyRequest(
         //   () -> new SwerveRequest.RobotCentric()
         //   .withVelocityX(2)
