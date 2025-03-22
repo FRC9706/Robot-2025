@@ -12,5 +12,4 @@ public class ArmConstants {
     public static final double kArmPosition2 = 5;
     public static final double kMinOutput = -0.1;
     public static final double kMaxOutput = 0.1;
-    public static boolean isOn = false;
 }

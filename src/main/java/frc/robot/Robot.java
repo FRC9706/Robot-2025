@@ -142,36 +142,8 @@ public class Robot extends TimedRobot {
         )
     );
 
-    driverController.y().onTrue(
-      Commands.runOnce(() -> {
-        // Toggle the state of ArmConstants.isOn
-        ArmConstants.isOn = !ArmConstants.isOn;
-        
-        // If ArmConstants.isOn is true, move the arm to position 5
-        if (ArmConstants.isOn) {
-          arm.goPosition(10);
-          System.out.println("Arm is now on");
-        } else {
-          double pos = arm.getPos();
-          System.out.println("Arm is now off, current postion is at:" + pos);
-          arm.stopMotor();
-        }
-      })
-    );
-    
-    
-
-
-    driverController.leftTrigger().onTrue(
-      Commands.run(() -> 
-        System.out.println("brocken")
-    ));
-
-    driverController.rightTrigger().onTrue(
-      Commands.run(() -> 
-      System.out.println("brocken")
-    ));
-
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(50)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(-50)));
   }
 
   @Override
