@@ -24,12 +24,12 @@ public class Autos extends SubsystemBase {
             Commands.sequence(
                 GoToReef.resetOdometry(),
                 GoToReef.cmd(),
-                Commands.runOnce(() -> arm.AutoGoPos2()),
+                Commands.runOnce(() -> arm.AutoGoUp()),
                 Commands.runOnce(() -> Intout.AutoOuttake()),
                 Commands.waitSeconds(Constants.AutoOuttakeWaitTime),
                 GoToFeeder.resetOdometry(),
                 GoToFeeder.cmd(),
-                Commands.runOnce(() -> arm.AutoGoPos1()),
+                Commands.runOnce(() -> arm.AutoGoToGround()),
                 Commands.runOnce(() -> Intout.AutoIntake())
             )
         );

@@ -43,6 +43,7 @@ public class Constants {
         public static final int kArmMotorID = 13;
         public static final int kArmPos1 = 0; // encoder counts
         public static final int kArmPos2 = 50; // encoder counts
+        public static final int kArmAlgae = 25; // encoder counts
         // rest of these are just reminders, NOT USED
         public static final double kArmPgain = 0.065;
         public static final double kArmIgain = 0;
