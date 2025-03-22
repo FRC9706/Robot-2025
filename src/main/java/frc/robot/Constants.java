@@ -15,6 +15,12 @@ import frc.robot.subsystems.Swerve;
 
 public class Constants {
 
+        // INTAKE/OUTTAKE
+
+        public static final int kIntakeMotorID = 14;
+        public static final int kShootDuration = 2;
+        public static final int kIntakeDuration = 2;
+
         // DETECTOR
 
         public static final String kLimelightName = "limelight";

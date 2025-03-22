@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intout;
 
 public class Robot extends TimedRobot {
 
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
   private final AutoFactory autofact;
   private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
+  private final Intout intout = new Intout();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -144,6 +146,9 @@ public class Robot extends TimedRobot {
 
     driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(50)));
     driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(-50)));
+
+    driverController.leftBumper().onTrue(Commands.runOnce(() -> Intout.intake()));
+    driverController.rightBumper().onTrue(Commands.runOnce(() -> Intout.outtake()));
   }
 
   @Override
