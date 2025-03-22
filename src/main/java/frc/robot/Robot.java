@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -26,15 +25,17 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
+import frc.robot.subsystems.Climb;
 
 public class Robot extends TimedRobot {
 
-  // Drivetrain Subsystem
+  // initialize subsystems
   private final Swerve drivetrain = Constants.createDrivetrain();
   private final AutoFactory autofact;
   private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
   private final Intout intout = new Intout();
+  private final Climb climb = new Climb();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -143,12 +144,16 @@ public class Robot extends TimedRobot {
             }
         )
     );
-
+    // Arm control
     driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(50)));
     driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(-50)));
 
+    // Int/out control
     driverController.leftBumper().onTrue(Commands.runOnce(() -> Intout.intake()));
     driverController.rightBumper().onTrue(Commands.runOnce(() -> Intout.outtake()));
+
+    // Climb control
+    driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
   }
 
   @Override
