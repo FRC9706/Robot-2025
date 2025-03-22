@@ -6,10 +6,6 @@ import static edu.wpi.first.units.Units.FeetPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-
-import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -26,16 +22,17 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Autos;
 
 public class Robot extends TimedRobot {
 
   // initialize subsystems
   private final Swerve drivetrain = Constants.createDrivetrain();
-  private final AutoFactory autofact;
   private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
-  private final Intout intout = new Intout();
+  // private final Intout intout = new Intout();
   private final Climb climb = new Climb();
+  private final Autos autos = new Autos();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -74,13 +71,6 @@ public class Robot extends TimedRobot {
             .withCaptureDs(true)
             .withCaptureConsole(true)
     );
-
-    autofact = new AutoFactory(
-      () -> drivetrain.getState().Pose,
-      drivetrain::resetPose, 
-      drivetrain::followTrajectory, 
-      true,
-      drivetrain);
 
       driverController.x().whileTrue(
         Commands.run(() -> {
@@ -155,21 +145,18 @@ public class Robot extends TimedRobot {
     // Climb control
     driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
   }
-
   @Override
   public void autonomousInit() {
-    // Basic taxi auto.
-    // Drives forward at 2 m/s for 1 second.
-    TestAuto().cmd().schedule();
-    // drivetrain.applyRequest(
-    //   () -> new SwerveRequest.RobotCentric()
-    //   .withVelocityX(2)
-    //   .withVelocityY(0)
-    //   .withRotationalRate(0)
-    // ).withTimeout(1).schedule();
-  }
-
-  @Override
+    // PGB: Put and Get Blue position: puts a preloaded coral in L1, then drives to the loader. Unifnished auto
+    autos.PGB1().cmd().schedule();
+        // drivetrain.applyRequest(
+        //   () -> new SwerveRequest.RobotCentric()
+        //   .withVelocityX(2)
+        //   .withVelocityY(0)
+        //   .withRotationalRate(0)
+        // ).withTimeout(1).schedule();
+      }
+      @Override
   public void robotInit() {
     // Set the Limelight to the AprilTag pipeline
     limelight.setAprilTagPipeline();
@@ -180,22 +167,5 @@ public class Robot extends TimedRobot {
     
     CommandScheduler.getInstance().run();
   }
-
-  public AutoRoutine TestAuto() {
-
-    AutoRoutine routine = autofact.newRoutine("test");
-
-    // Load the routine's trajectories
-    AutoTrajectory reefTraj = routine.trajectory("GoToClosestReef", 0);
-
-    // When the routine begins, reset odometry and start the first trajectory 
-    routine.active().onTrue(
-        Commands.sequence(
-            reefTraj.resetOdometry(),
-            reefTraj.cmd()
-        )
-    );
-    return routine;
-}
 
 }
