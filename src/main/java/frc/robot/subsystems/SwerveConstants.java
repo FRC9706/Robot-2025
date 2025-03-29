@@ -12,6 +12,8 @@ import edu.wpi.first.units.measure.*;
 
 public class SwerveConstants {
 
+        public static final int kClimbMotorID = 21;
+
     // PID Values for the Steering Motors
     private static final Slot0Configs steerGains = new Slot0Configs()
             .withKP(70).withKI(0).withKD(0.1)

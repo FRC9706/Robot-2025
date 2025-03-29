@@ -23,6 +23,7 @@ import frc.robot.subsystems.Swerve;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.SwerveConstants;
 
 public class Robot extends TimedRobot {
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   // Drivetrain Subsystem
   private final Swerve drivetrain = SwerveConstants.createDrivetrain();
   private final AutoFactory autofact;
+  private final Climb climb = new Climb();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -80,6 +82,8 @@ public class Robot extends TimedRobot {
             }
         )
     );
+
+    driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
 
   }
 
