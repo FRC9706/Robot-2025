@@ -23,10 +23,10 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import frc.robot.Parameters;
 import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
-import frc.robot.Constants.CTRESwerveDrivetrain;
+import frc.robot.Parameters.CTRESwerveDrivetrain;
 
 public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
@@ -152,9 +152,9 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
     public void goToLimelight(DoubleSupplier xVelSupplier) {
-        hasTarget = LimelightHelpers.getTV(Constants.kLimelightName); 
-        tX = LimelightHelpers.getTX(Constants.kLimelightName);
-        tA = LimelightHelpers.getTA(Constants.kLimelightName); 
+        hasTarget = LimelightHelpers.getTV(Parameters.kLimelightName); 
+        tX = LimelightHelpers.getTX(Parameters.kLimelightName);
+        tA = LimelightHelpers.getTA(Parameters.kLimelightName); 
         
         if(Math.abs(tX) < 1.5) {
             tX = 0;

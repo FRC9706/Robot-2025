@@ -6,17 +6,18 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Parameters;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class Arm extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(Constants.kArmMotorID, MotorType.kBrushless);
+    private final SparkMax motor = new SparkMax(Parameters.kArmMotorID, MotorType.kBrushless);
     private final SparkMaxConfig config = new SparkMaxConfig();
     private final RelativeEncoder encoder = motor.getEncoder();
     private final SparkClosedLoopController cloop = motor.getClosedLoopController();
+    private boolean algaePrepared = false;
 
     public Arm() {
         encoder.setPosition(0);
@@ -24,23 +25,28 @@ public class Arm extends SubsystemBase {
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    public void setTargetCentPos(double pos) {
+    public void setTargetPos(double pos) {
         cloop.setReference(pos, SparkMax.ControlType.kPosition);
     }
 
     public void prepareForAlgae() {
-        setTargetCentPos(Constants.kArmAlgae);
+        if (algaePrepared){
+        config.idleMode(IdleMode.kBrake);
+        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        algaePrepared = false;
+    } else {
+        setTargetPos(Parameters.kArmAlgae);
         config.idleMode(IdleMode.kCoast);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        algaePrepared = true;
+    }
     }
 
     public void AutoGoToGround() {
-        setTargetCentPos(Constants.kArmPos1);
+        setTargetPos(Parameters.kArmPos1);
     }
 
     public void AutoGoUp() {
-        setTargetCentPos(Constants.kArmPos2);
+        setTargetPos(Parameters.kArmPos2);
     }
-
-
 }

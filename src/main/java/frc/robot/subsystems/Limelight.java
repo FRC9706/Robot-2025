@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants;
+import frc.robot.Parameters;
 import dev.doglog.DogLog;
 
 public class Limelight {
@@ -9,7 +9,7 @@ public class Limelight {
     private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
 
     public void setAprilTagPipeline() {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(Constants.kAprilTagPiplineNumber);  // Change '1' to your AprilTag pipeline number
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(Parameters.kAprilTagPiplineNumber);  // Change '1' to your AprilTag pipeline number
     }
 
     public double getA() {

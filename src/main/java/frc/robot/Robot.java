@@ -25,7 +25,7 @@ import frc.robot.subsystems.Autos;
 public class Robot extends TimedRobot {
 
   // initialize subsystems
-  private final Swerve drivetrain = Constants.createDrivetrain();
+  private final Swerve drivetrain = Parameters.createDrivetrain();
   private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
   // private final Intout intout = new Intout();
@@ -91,18 +91,18 @@ public class Robot extends TimedRobot {
     SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI);
     // Drive command
     final SwerveRequest.FieldCentricFacingAngle snapDrive = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
+      .withDeadband(Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
       .withDriveRequestType(DriveRequestType.Velocity);
-    snapDrive.HeadingController = new PhoenixPIDController(Constants.HeadingControlkP, Constants.HeadingControlkI, Constants.HeadingControlkD);
+    snapDrive.HeadingController = new PhoenixPIDController(Parameters.HeadingControlkP, Parameters.HeadingControlkI, Parameters.HeadingControlkD);
     snapDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(() -> snapDrive
-              .withVelocityX(-driverController.getLeftY() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-              .withVelocityY(-driverController.getLeftX() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withVelocityX(-driverController.getLeftY() * Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
+              .withVelocityY(-driverController.getLeftX() * Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
               .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(getLastThetaControllerInputY(), -getLastThetaControllerInputX()) + Math.PI/2))))
-              .withTargetRateFeedforward(Constants.HeadingFF)
+              .withTargetRateFeedforward(Parameters.HeadingFF)
               )
           /*   () -> new SwerveRequest.FieldCentricFacingAngle()
                 .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
@@ -133,8 +133,9 @@ public class Robot extends TimedRobot {
         )
     );
     // Arm control
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(50)));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetCentPos(-50)));
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoToGround()));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoUp()));
+    driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control
     driverController.leftBumper().onTrue(Commands.runOnce(() -> Intout.intake()));

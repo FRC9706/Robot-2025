@@ -13,10 +13,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.*;
 import frc.robot.subsystems.Swerve;
 
-public class Constants {
-        // AUTONOMOUS
+public class Parameters {
+        // AUTONOMOUS SEQUENCE
 
-        public static final int AutoOuttakeWaitTime = 2; // seconds
+        public static final int AutoOuttakeWaitTime = 2; // seconds after outtaake before next segment
 
         // CLIMB
 
@@ -31,7 +31,8 @@ public class Constants {
         public static final int one = kMotorReversed ? -1 : 1;
         public static final int kShootDuration = 2;
         public static final int kIntakeDuration = 2;
-        public static final int kIntakeLimitSwitchID = 0;
+        public static final int kCoralLimitSwitchID = 0;
+        public static final int kAlgaeLimitSwitchID = 1;
 
         // DETECTOR
 

@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Parameters;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Climb extends SubsystemBase {
-    private static final TalonFX climbMotor = new TalonFX(Constants.kClimbMotorID);
+    private static final TalonFX climbMotor = new TalonFX(Parameters.kClimbMotorID);
     private boolean climberPosition = false;
     private boolean isRunning = false;
     
