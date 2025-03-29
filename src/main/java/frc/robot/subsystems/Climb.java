@@ -19,7 +19,7 @@ public class Climb extends SubsystemBase {
                 isRunning = false;
                 climberPosition = false;
             } else {
-                climbMotor.set(-1);
+                climbMotor.set(-0.1);
                 isRunning = true;
             }
         } else {
@@ -28,7 +28,7 @@ public class Climb extends SubsystemBase {
                 isRunning = false;
                 climberPosition = true;
             } else {
-                climbMotor.set(1);
+                climbMotor.set(0.1);
                 isRunning = true;
             }
         }
