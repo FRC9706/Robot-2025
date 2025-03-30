@@ -6,7 +6,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -15,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
@@ -33,32 +34,6 @@ public class Robot extends TimedRobot {
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
 
-  // Theta Controller lastvals, janky solution but it works
-  private double valx;
-  private double LastValY = 0;
-  private double LastValX = 0;
-  private double valy;
-  private double getLastThetaControllerInputX() {
-    valx = driverController.getRightX();
-    if (Math.abs(valx) < 0.05) {
-      return LastValX;
-    } else {
-      LastValX = valx;
-      return valx;
-    }
-  }
-  private double getLastThetaControllerInputY() {
-    valy = driverController.getRightY();
-    if (Math.abs(valy) < 0.05) {
-      return LastValY;
-    } else {
-      LastValY = valy;
-      return valy;
-    }
-  }
-  /**
-   * 
-   */
   public Robot() {
 
     // Configure DogLog
@@ -86,7 +61,6 @@ public class Robot extends TimedRobot {
     double controllerDeadband = 0.1;
 
     new Rotation2d();
-    SlewRateLimiter targetDirectionLimiter = new SlewRateLimiter(Math.PI);
     // Drive command
     final SwerveRequest.FieldCentricFacingAngle snapDrive = new SwerveRequest.FieldCentricFacingAngle()
       .withDeadband(Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
@@ -96,12 +70,14 @@ public class Robot extends TimedRobot {
 
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(() -> snapDrive
-              .withVelocityX(-driverController.getLeftY() * Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-              .withVelocityY(-driverController.getLeftX() * Parameters.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-              .withTargetDirection(Rotation2d.fromRadians(targetDirectionLimiter.calculate((Math.atan2(getLastThetaControllerInputY(), -getLastThetaControllerInputX()) + Math.PI/2))))
-              .withTargetRateFeedforward(Parameters.HeadingFF)
-              )
+        drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
+        .withDeadband(Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * controllerDeadband * translationSpeedMultiplier)
+        .withRotationalDeadband(Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withVelocityX(-driverController.getLeftY() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
+        .withVelocityY(-driverController.getLeftX() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
+        .withRotationalRate(-driverController.getRightX() * Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond))
+)
           /*   () -> new SwerveRequest.FieldCentricFacingAngle()
                 .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
                 .withRotationalDeadband(Constants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
