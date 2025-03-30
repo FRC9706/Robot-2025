@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Parameters;
+
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Climb extends SubsystemBase {
@@ -13,10 +15,10 @@ public class Climb extends SubsystemBase {
 
     public void climb() {
         if (isRunning) {
-            climbMotor.set(0);
+            climbMotor.setControl(new VelocityVoltage(1000/60));
             isRunning = false;
         } else {
-            climbMotor.set(-0.1);
+            climbMotor.setControl(new VelocityVoltage(-1000/60));
             isRunning = true;
         }
     }
