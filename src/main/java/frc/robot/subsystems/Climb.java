@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Climb extends SubsystemBase {
     private static final TalonFX climbMotor = new TalonFX(Parameters.kClimbMotorID);
-    private boolean climberPosition = false;
     private boolean isRunning = false;
     
     public Climb() {
@@ -13,24 +12,12 @@ public class Climb extends SubsystemBase {
     }
 
     public void climb() {
-        if (climberPosition) {
-            if (isRunning) {
-                climbMotor.set(0);
-                isRunning = false;
-                climberPosition = false;
-            } else {
-                climbMotor.set(-1);
-                isRunning = true;
-            }
+        if (isRunning) {
+            climbMotor.set(0);
+            isRunning = false;
         } else {
-            if (isRunning) {
-                climbMotor.set(0);
-                isRunning = false;
-                climberPosition = true;
-            } else {
-                climbMotor.set(1);
-                isRunning = true;
-            }
+            climbMotor.set(-0.1);
+            isRunning = true;
         }
     }
 }
