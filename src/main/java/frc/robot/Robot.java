@@ -8,6 +8,7 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -16,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
 import frc.robot.subsystems.Climb;
@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
 
   // initialize subsystems
   private final Swerve drivetrain = Parameters.createDrivetrain();
-  private final Limelight limelight = new Limelight();
   private final Arm arm = new Arm();
   // private final Intout intout = new Intout();
   private final Climb climb = new Climb();
@@ -138,8 +137,8 @@ public class Robot extends TimedRobot {
     driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control
-    driverController.leftBumper().onTrue(Commands.runOnce(() -> Intout.intake()));
-    driverController.rightBumper().onTrue(Commands.runOnce(() -> Intout.outtake()));
+    driverController.leftBumper().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitSeconds(Parameters.kShootDuration), Commands.runOnce(() -> Intout.set(0))));
+    driverController.rightBumper().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitSeconds(Parameters.kIntakeDuration), Commands.runOnce(() -> Intout.set(0))));
 
     // Climb control
     driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
@@ -158,7 +157,6 @@ public class Robot extends TimedRobot {
       @Override
   public void robotInit() {
     // Set the Limelight to the AprilTag pipeline
-    limelight.setAprilTagPipeline();
   }
 
   @Override

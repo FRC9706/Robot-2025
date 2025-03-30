@@ -14,6 +14,10 @@ public class Intout extends SubsystemBase {
         intout.set(0);
     }
 
+    public static void set(double speed) {
+        intout.set(speed);
+    }
+
     public static void outtake() {
         Commands.sequence(Commands.runOnce(() -> intout.set(Parameters.one)), Commands.waitSeconds(Parameters.kShootDuration), Commands.runOnce(() -> intout.set(0)));
     }
