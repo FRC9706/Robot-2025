@@ -43,13 +43,6 @@ public class Robot extends TimedRobot {
             .withCaptureConsole(true)
     );
 
-      driverController.x().whileTrue(
-        Commands.run(() -> {
-            // Keep moving
-            drivetrain.goToLimelight(driverController::getLeftX);
-        }, drivetrain
-        ));
-
       driverController.x().onFalse(
         Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric().withRotationalRate(0).withVelocityX(0)))
       );
