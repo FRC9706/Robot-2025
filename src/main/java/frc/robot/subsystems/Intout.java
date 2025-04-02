@@ -2,13 +2,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.Parameters;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Intout extends SubsystemBase {
     private final static SparkMax intout = new SparkMax(Parameters.kIntakeMotorID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    private final static DigitalInput coralSwitch = new DigitalInput(Parameters.kCoralLimitSwitchID);
-    private final static DigitalInput algaeSwitch = new DigitalInput(Parameters.kAlgaeLimitSwitchID);
+    public final static DigitalInput coralSwitch = new DigitalInput(Parameters.kCoralLimitSwitchID);
+    public final static DigitalInput algaeSwitch = new DigitalInput(Parameters.kAlgaeLimitSwitchID);
 
     public Intout() {
         intout.set(0);

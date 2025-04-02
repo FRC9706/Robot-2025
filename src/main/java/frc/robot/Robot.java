@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
 
     
 
-    //Teleop Speed Multipliers. Percentages of the max speed. 
+    // Teleop Speed Multipliers. Percentages of the max speed. 
     double translationSpeedMultiplier = 0.25;
     double controllerDeadband = 0.1;
 
@@ -105,8 +105,15 @@ public class Robot extends TimedRobot {
     driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control
-    driverController.leftBumper().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitSeconds(Parameters.kShootDuration), Commands.runOnce(() -> Intout.set(0))));
-    driverController.rightBumper().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitSeconds(Parameters.kIntakeDuration), Commands.runOnce(() -> Intout.set(0))));
+
+    // D-pad down: intake coral
+    driverController.povDown().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitUntil(() -> Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    // D-pad  up: outtake coral
+    driverController.povUp().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitUntil(() -> !Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    // D-pad left: intake algae
+    driverController.povLeft().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitUntil(() -> Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    // D-pad right: outtake algae
+    driverController.povRight().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitUntil(() -> !Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
 
     // Climb control
     driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));

@@ -22,6 +22,7 @@ public class Arm extends SubsystemBase {
     public Arm() {
         encoder.setPosition(0);
         config.idleMode(IdleMode.kBrake);
+        config.smartCurrentLimit(15);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
