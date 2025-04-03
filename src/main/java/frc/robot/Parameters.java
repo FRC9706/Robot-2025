@@ -25,14 +25,14 @@ public class Parameters {
 
         // INTAKE/OUTTAKE
 
-        public static final int kIntakeMotorID = 14;
+        public static final int kIntakeMotorID = 13;
         public static final boolean kMotorReversed = false;
         // literally the dumbest constant I have ever had to code
         public static final int one = kMotorReversed ? -1 : 1;
         public static final int kShootDuration = 2;
         public static final int kIntakeDuration = 2;
-        public static final int kCoralLimitSwitchID = 0;
-        public static final int kAlgaeLimitSwitchID = 1;
+        public static final int kCoralLimitSwitchID = 1;
+        public static final int kAlgaeLimitSwitchID = 0;
 
         // DETECTOR
 
@@ -41,7 +41,7 @@ public class Parameters {
 
         // ARM
 
-        public static final int kArmMotorID = 13;
+        public static final int kArmMotorID = 14;
         public static final int kArmPos1 = 0; // encoder counts
         public static final int kArmPos2 = 50; // encoder counts
         public static final int kArmAlgae = 25; // encoder counts

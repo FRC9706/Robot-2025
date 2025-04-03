@@ -13,7 +13,14 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class Arm extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(Parameters.kArmMotorID, MotorType.kBrushless);
+    public static Arm mInstance = null;
+    public static Arm getInstance(){
+        if(mInstance==null){
+            mInstance = new Arm();
+        }
+        return mInstance;
+    }
+    static private final SparkMax motor = new SparkMax(Parameters.kArmMotorID, MotorType.kBrushless);
     private final SparkMaxConfig config = new SparkMaxConfig();
     private final RelativeEncoder encoder = motor.getEncoder();
     private final SparkClosedLoopController cloop = motor.getClosedLoopController();
@@ -22,7 +29,7 @@ public class Arm extends SubsystemBase {
     public Arm() {
         encoder.setPosition(0);
         config.idleMode(IdleMode.kBrake);
-        config.smartCurrentLimit(15);
+        config.smartCurrentLimit(10);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
