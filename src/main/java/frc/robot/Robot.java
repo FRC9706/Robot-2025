@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
   private final Swerve drivetrain = Parameters.createDrivetrain();
   private final Arm arm = Arm.getInstance();
   // private final Intout intout = new Intout();
-  private final Climb climb = new Climb();
-  private final Autos autos = new Autos();
+  private final Climb climb = Climb.getInstance();
+  private final Autos autos = Autos.getInstance();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -100,8 +100,10 @@ public class Robot extends TimedRobot {
         )
     );
     // Arm control
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoToGround()));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoUp()));
+    // driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoToGround()));
+    // driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoUp()));
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetPos(Parameters.kArmPos1)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetPos(Parameters.kArmPos2)));
     driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control

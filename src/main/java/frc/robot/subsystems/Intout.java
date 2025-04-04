@@ -9,6 +9,13 @@ public class Intout extends SubsystemBase {
     private final static SparkMax intout = new SparkMax(Parameters.kIntakeMotorID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     public final static DigitalInput coralSwitch = new DigitalInput(Parameters.kCoralLimitSwitchID);
     public final static DigitalInput algaeSwitch = new DigitalInput(Parameters.kAlgaeLimitSwitchID);
+    public static Intout mInstance = null;
+    public static Intout getInstance(){
+        if(mInstance==null){
+            mInstance = new Intout();
+        }
+        return mInstance;
+    }
 
     public Intout() {
         intout.set(0);

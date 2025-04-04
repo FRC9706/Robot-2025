@@ -10,6 +10,13 @@ public class Autos extends SubsystemBase {
 
     private final AutoFactory autofact;
     private final Swerve drivetrain = Parameters.createDrivetrain();
+    public static Autos mInstance = null;
+    public static Autos getInstance(){
+        if(mInstance==null){
+            mInstance = new Autos();
+        }
+        return mInstance;
+    }
     private final Arm arm = Arm.getInstance();
 
     public Autos() {
