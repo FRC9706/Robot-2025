@@ -70,6 +70,13 @@ public class Arm extends SubsystemBase {
         CLcontroller.setReference(targPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
+    public static double getPos() {
+        double position = motor.getEncoder().getPosition();
+            return position;
+    }
+    
+    
+
     // public void setTargetPos(double pos) {
     //     cloop.setReference(pos, SparkMax.ControlType.kPosition);
     // }

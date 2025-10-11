@@ -76,7 +76,7 @@ public class Parameters {
         public static final double mxOut = 0.5;
         public static final double minOut = -0.5;
         public static final double grabCor = -53;
-        public static final double grabAL = -20;
+        public static final double grabAL = -30;
         public static final double retract = -10;
         public static final double velFF = 1.0 / 5767;
 

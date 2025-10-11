@@ -224,11 +224,21 @@ public class Robot extends TimedRobot {
     //     case kR3: autos.A3(kR3).cmd().schedule(); break;
     // }
 
-
-
-
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
     Commands.sequence(
+      Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
+      Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
+
+      Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
+          .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 7.9),
+      Commands.runOnce(() -> Arm.goToPos(Parameters.grabAL), drivetrain),
+      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.grabAL) < 0.5),
+
+      Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
+      Commands.waitSeconds(0.5),
+      Commands.runOnce(() -> Intout.set(0), Intout.getInstance())
+  
+
       // Move foward for 3 seconds
       // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
       // .withVelocityX(-1)).withTimeout(0.5),
@@ -238,7 +248,6 @@ public class Robot extends TimedRobot {
       // .withVelocityX(1)).withTimeout(0.5),
       // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
       // .withVelocityX(0)).withTimeout(1)
-      
 
       // // Out-take coral for 3 seconds
       // Commands.runOnce(() -> Intout.set(Parameters.one)).withTimeout(3),
@@ -246,7 +255,6 @@ public class Robot extends TimedRobot {
       // Commands.runOnce(() -> Intout.set(0))
     ).schedule();
     // Now, schedule the Taxi command
-    autos.Taxi();
 }
 
     @Override

@@ -16,7 +16,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 public class Autos extends SubsystemBase {
 
-    private final AutoFactory autofact;
+    // private final AutoFactory autofact;
     private final Swerve drivetrain = Parameters.createDrivetrain();
     private final Arm arm = Arm.getInstance();
     public static Autos mInstance = null;
@@ -27,18 +27,18 @@ public class Autos extends SubsystemBase {
         return mInstance;
     }
 
-    public Autos() {
-        autofact = new AutoFactory(() -> 
-        drivetrain.getState().Pose, 
-        drivetrain::resetPose, 
-        drivetrain::followTrajectory, 
-        false, 
-        drivetrain);
-    }
+    // public Autos() {
+    //     autofact = new AutoFactory(() -> 
+    //     drivetrain.getState().Pose, 
+    //     pose -> {}, 
+    //     followTrajectory -> {}, 
+    //     false, 
+    //     drivetrain);
+    // }
 
-    public void yAndrewTraj() {
-    Command myAndrewTraj = autofact.trajectoryCmd("PGB1.traj");
-    }
+    // public void yAndrewTraj() {
+    // Command myAndrewTraj = autofact.trajectoryCmd("PGB1.traj");
+    // }
     // public AutoRoutine A1(String name) {
     //     AutoRoutine routine = autofact.newRoutine(name);
     //     AutoTrajectory GoToReef = routine.trajectory(name, 0);
@@ -162,10 +162,10 @@ public class Autos extends SubsystemBase {
     public void Taxi() {
             Commands.sequence(
                 Commands.print("yo bro ima move bro"),
-                drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
+                drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
                 .withVelocityX(1))
                 .withTimeout(1),
-                drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
+                drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
                 .withVelocityX(0)).withTimeout(1),
                 Commands.print("yo bro ima stop moving bro")
               ).schedule();
