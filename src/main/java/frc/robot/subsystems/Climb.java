@@ -6,6 +6,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Parameters;
 
@@ -13,7 +20,20 @@ public class Climb extends SubsystemBase {
     public static final TalonFX climbMotor = new TalonFX(Parameters.kClimbMotorID);
     public static final TalonFX climbMotor2 = new TalonFX(Parameters.kClimbMotorID2);
 
+    public static final TalonFX climbMotor = new TalonFX(Parameters.kClimbMotorID);
+    public static final TalonFX climbMotor2 = new TalonFX(Parameters.kClimbMotorID2);
+
     private boolean isRunning = false;
+    public static Climb mInstance = null;
+    public static Climb getInstance() {
+        if (mInstance == null) {
+            mInstance = new Climb();
+        }
+        return mInstance;
+    }
+    
+
+
     public static Climb mInstance = null;
     public static Climb getInstance() {
         if (mInstance == null) {
@@ -82,7 +102,23 @@ public class Climb extends SubsystemBase {
 
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
     public void climb() {
+            if (isRunning) {
+                climbMotor.set(0);
+            } else {
+                climbMotor.set(1);
+            }
+            isRunning = !isRunning; // even better
+    }
+
+    public double armDegsToMotorDegs(double input) {
+        return input*5.091;
+    }
+
+    public void goToRot(double rot) {
+        climbMotor.setControl(m_request.withPosition(rot));
             if (isRunning) {
                 climbMotor.set(0);
             } else {
