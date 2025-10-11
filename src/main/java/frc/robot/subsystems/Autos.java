@@ -11,6 +11,13 @@ public class Autos extends SubsystemBase {
     private final AutoFactory autofact;
     private final Swerve drivetrain = Parameters.createDrivetrain();
     private final Arm arm = Arm.getInstance();
+    public static Autos mInstance = null;
+    public static Autos getInstance() {
+        if (mInstance == null) {
+            mInstance = new Autos();
+        }
+        return mInstance;
+    }
 
     public Autos() {
         autofact = new AutoFactory(() -> drivetrain.getState().Pose, drivetrain::resetPose, drivetrain::followTrajectory, false, drivetrain);

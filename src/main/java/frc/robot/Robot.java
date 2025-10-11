@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
   private final Swerve drivetrain = Parameters.createDrivetrain();
   private final Arm arm = Arm.getInstance();
   // private final Intout intout = new Intout();
-  private final Climb climb = new Climb();
-  private final Autos autos = new Autos();
+  private final Climb climb = Climb.getInstance();
+  private final Autos autos = Autos.getInstance();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(0);
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 
     // Teleop Speed Multipliers. Percentages of the max speed. 
     double translationSpeedMultiplier = 1;
-    double controllerDeadband = 0.1;
+    double controllerDeadband = 0;
 
     new Rotation2d();
     // Drive command
@@ -100,20 +100,22 @@ public class Robot extends TimedRobot {
         )
     );
     // Arm control
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoToGround()));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoUp()));
-    driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
+    driverController.leftTrigger().whileTrue(Commands.run(() -> arm.set(0.5)));
+    driverController.leftTrigger().whileFalse(Commands.run(() -> arm.set(0)));
+    driverController.rightTrigger().whileTrue(Commands.run(() -> arm.set(0.5)));
+    driverController.rightTrigger().whileFalse(Commands.run(() -> arm.set(0)));
+    // driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control
 
     // D-pad down: intake coral
-    driverController.povDown().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one*0.1)), Commands.waitUntil(() -> !Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    driverController.povDown().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitUntil(() -> !Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
     // D-pad  up: outtake coral
-    driverController.povUp().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one*0.1)), Commands.waitUntil(() -> Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    driverController.povUp().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitUntil(() -> Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
     // D-pad left: intake algae
-    driverController.povLeft().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one*0.1)), Commands.waitUntil(() -> !Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    driverController.povLeft().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one)), Commands.waitUntil(() -> !Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
     // D-pad right: outtake algae
-    driverController.povRight().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one*0.1)), Commands.waitUntil(() -> Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+    driverController.povRight().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one)), Commands.waitUntil(() -> Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
 
     // Climb control
     driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));

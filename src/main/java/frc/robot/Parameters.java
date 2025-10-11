@@ -21,7 +21,7 @@ public class Parameters {
         // CLIMB
 
         public static final double gearRatio = 1;
-        public static final int kClimbMotorID = 15;
+        public static final int kClimbMotorID = 21;
 
         // INTAKE/OUTTAKE
 

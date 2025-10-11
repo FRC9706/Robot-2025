@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
     static private final SparkMax motor = new SparkMax(Parameters.kArmMotorID, MotorType.kBrushless);
     private final SparkMaxConfig config = new SparkMaxConfig();
     private final RelativeEncoder encoder = motor.getEncoder();
-    private final SparkClosedLoopController cloop = motor.getClosedLoopController();
+    static public final SparkClosedLoopController cloop = motor.getClosedLoopController();
     private boolean algaePrepared = false;
 
     public Arm() {
@@ -37,18 +37,22 @@ public class Arm extends SubsystemBase {
         cloop.setReference(pos, SparkMax.ControlType.kPosition);
     }
 
-    public void prepareForAlgae() {
-        if (algaePrepared){
-        config.idleMode(IdleMode.kBrake);
-        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        algaePrepared = false;
-    } else {
-        setTargetPos(Parameters.kArmAlgae);
-        config.idleMode(IdleMode.kCoast);
-        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        algaePrepared = true;
+    public void set(double sped) {
+        motor.set(sped);
     }
-    }
+
+    // public void prepareForAlgae() {
+    //     if (algaePrepared){
+    //     config.idleMode(IdleMode.kCoast);
+    //     motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     algaePrepared = false;
+    // } else {
+    //     setTargetPos(Parameters.kArmAlgae);
+    //     config.idleMode(IdleMode.kBrake);
+    //     motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     algaePrepared = true;
+    // }
+    // }
 
     public void AutoGoToGround() {
         setTargetPos(Parameters.kArmPos1);
