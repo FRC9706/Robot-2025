@@ -4,22 +4,32 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+import com.revrobotics.spark.ClosedLoopSlot;
+//import com.fasterxml.jackson.core.base.ParserMinimalBase;
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.hal.simulation.DriverStationDataJNI;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Climb2;
 import frc.robot.subsystems.Autos;
 
 public class Robot extends TimedRobot {
@@ -29,12 +39,31 @@ public class Robot extends TimedRobot {
   private final Arm arm = Arm.getInstance();
   // private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
+  private final Climb2 climb2 = Climb2.getInstance();
   private final Autos autos = Autos.getInstance();
+  private static final String kDef = "GTFO";
+  private static final String kB1 = "PGB1";
+  private static final String kB2 = "PGB2";
+  private static final String kB3 = "PGB3";
+  private static final String kR1 = "PGR1";
+  private static final String kR2 = "PGR2";
+  private static final String kR3 = "PGR3";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   // Driver Controller
-  private CommandXboxController driverController = new CommandXboxController(0);
+  private CommandXboxController driverController = new CommandXboxController(1);
 
   public Robot() {
+    
+    m_chooser.setDefaultOption("GTFO", kDef);
+    m_chooser.addOption("BlueOuter", kB1);
+    m_chooser.addOption("BlueMiddle", kB2);
+    m_chooser.addOption("BlueInner", kB3);
+    m_chooser.addOption("RedOuter", kR1);
+    m_chooser.addOption("RedMiddle", kR2);
+    m_chooser.addOption("RedInner", kR3);
+    SmartDashboard.putData("Pick an auto, any auto:", m_chooser);
 
     // Configure DogLog
     DogLog.setOptions(
@@ -42,16 +71,11 @@ public class Robot extends TimedRobot {
             .withCaptureDs(true)
             .withCaptureConsole(true)
     );
-
-      driverController.x().onFalse(
-        Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric().withRotationalRate(0).withVelocityX(0)))
-      );
-
     
 
     // Teleop Speed Multipliers. Percentages of the max speed. 
-    double translationSpeedMultiplier = 1;
-    double controllerDeadband = 0.1;
+    double translationSpeedMultiplier = 0.5;
+    double controllerDeadband = 0;
 
     new Rotation2d();
     // Drive command
@@ -63,29 +87,25 @@ public class Robot extends TimedRobot {
 
     // Set the default command for the drivetrain to be the teleop drive command.
     drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
-        .withDeadband(Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * controllerDeadband * translationSpeedMultiplier)
-        .withRotationalDeadband(Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband)
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-        .withVelocityX(-driverController.getLeftY() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-        .withVelocityY(-driverController.getLeftX() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
-        .withRotationalRate(-driverController.getRightX() * Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond))
-)
-          /*   () -> new SwerveRequest.FieldCentricFacingAngle()
-                .withDeadband(Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * controllerDeadband * translationSpeedMultiplier)
-                .withRotationalDeadband(Constants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband * rotationSpeedMultiplier)
+        drivetrain.applyRequest(
+            () -> new SwerveRequest.FieldCentric()
+                .withDeadband(Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * controllerDeadband * translationSpeedMultiplier)
+                .withRotationalDeadband(Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond) * controllerDeadband)
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-                .withVelocityX(-driverController.getLeftY() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-                .withVelocityY(-driverController.getLeftX() * Constants.kTranslationSpeedAt12Volts.in(FeetPerSecond) * translationSpeedMultiplier)
-                .withTargetDirection(Rotation2d.fromDegrees(NonZeroRad(-driverController.getRightX(), -driverController.getRightY())))
-                .withTargetRateFeedforward(Constants.HeadingFF)
-                .withHeadingPID(Constants.HeadingControlkP, Constants.HeadingControlkI, Constants.HeadingControlkD)
-                // .withRotationa
-                lRate(-driverController.getRightX() * 0.2 * Constants.kRotationSpeedAt12Volts.in(RadiansPerSecond) * rotationSpeedMultiplier)
-            */
-            
-        );
+                .withVelocityX(-driverController.getLeftY() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
+                .withVelocityY(-driverController.getLeftX() * Parameters.kTranslationSpeedAt12Volts.in(MetersPerSecond) * translationSpeedMultiplier)
+                .withRotationalRate(-driverController.getRightX() *0.8 * Parameters.kRotationSpeedAt12Volts.in(RadiansPerSecond))
+        )
+    );
       
+
+
+    driverController.x().onTrue(
+      Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric()
+      .withRotationalRate(0)
+      .withVelocityX(0))
+      )
+    );
 
     // Button to reset the field-relative rotation to 0 degrees. Face the robot away
     // from the driver station wall when pressing.
@@ -99,40 +119,152 @@ public class Robot extends TimedRobot {
             }
         )
     );
+
+    driverController.b().onTrue(
+      Commands.runOnce(() -> {
+          climb.climb();
+          climb2.climb2();
+      }, climb, climb2)
+  );
+
+    // driverController.y().whileTrue(
+    //   Commands.run(() -> {
+    //       drivetrain.goToAprilTag();
+    //   }, drivetrain)
+    //   .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
+    // );
+
+    driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
+
+  //   driverController.y().onTrue(
+  //     Commands.runOnce(() -> {
+  //         climb.goToRot(1);
+  //         climb2.goToRot2(1);
+  //     }, climb, climb2)
+  // );
+
+    
+  // driverController.a().onTrue(Commands.runOnce(() -> climb.climb()));
+  // driverController.b().onTrue(Commands.runOnce(() -> climb2.climb2()));
+
+  // Arm stuff
+
+  // driverController.y().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
+  // driverController.b().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabAL)));
+  // driverController.a().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
+
+  
     // Arm control
-    // driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoToGround()));
-    // driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.AutoGoUp()));
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.setTargetPos(Parameters.kArmPos1)));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.setTargetPos(Parameters.kArmPos2)));
-    driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
+    driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
+    driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+
+    // driverController.leftTrigger().onTrue(Commands.print("test"));
+    // driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
 
     // Int/out control
 
-    // D-pad down: intake coral
-    driverController.povDown().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one*0.1)), Commands.waitUntil(() -> !Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
-    // D-pad  up: outtake coral
-    driverController.povUp().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one*0.1)), Commands.waitUntil(() -> Intout.coralSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
-    // D-pad left: intake algae
-    driverController.povLeft().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(Parameters.one*0.1)), Commands.waitUntil(() -> !Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
-    // D-pad right: outtake algae
-    driverController.povRight().onTrue(Commands.sequence(Commands.runOnce(() -> Intout.set(-Parameters.one*0.1)), Commands.waitUntil(() -> Intout.algaeSwitch.get()), Commands.runOnce(() -> Intout.set(0))));
+// left bumper: intake coral
+//  driverController.leftBumper().whileTrue(
+//   Commands.sequence(
+//     Commands.run(() -> Intout.set(Parameters.one))  // Run intake continuously
+//    Commands.waitUntil(() -> !Intout.coralSwitch.get())  // Stop when the limit switch is triggered
+// )).onFalse(
+//   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
+// );
 
-    // Climb control
-    driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
+// // right bumper: outtake coral
+// driverController.rightBumper().whileTrue(
+//   Commands.sequence(
+//     Commands.run(() -> Intout.set(-Parameters.one))  // Run outtak`e continuously
+//     Commands.waitUntil(() -> Intout.coralSwitch.get())  // Stop when the limit switch is triggered
+//   )).onFalse(
+//   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
+// );
+
+
+    
+    // left bumber: intake algae
+    driverController.leftBumper().whileTrue(
+      Commands.sequence(
+        Commands.runOnce(() -> Intout.set(Parameters.one))
+       // Commands.waitUntil(() -> Intout.algaeSwitch.get()),
+      )).onFalse(
+        Commands.runOnce(() -> Intout.set(0))
+      );
+
+    // right bumper: outtake algae
+    driverController.rightBumper().onTrue(
+      Commands.sequence(
+      Commands.runOnce(() -> Intout.set(-Parameters.one))
+     // Commands.waitUntil(() -> !Intout.algaeSwitch.get()),
+      )).onFalse(
+        Commands.runOnce(() -> Intout.set(0))
+      );
+
+    // // Climb control
+    // driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
+
+
   }
   @Override
   public void autonomousInit() {
-    // PGB: Put and Get Blue position: puts a preloaded coral in L1, then drives to the loader. Unifnished auto
-    autos.A1("PGB1").cmd().schedule();
-        // drivetrain.applyRequest(
-        //   () -> new SwerveRequest.RobotCentric()
-        //   .withVelocityX(2)
-        //   .withVelocityY(0)
-        //   .withRotationalRate(0)
-        // ).withTimeout(1).schedule();
-      }
+    // Optional: Select an autonomous routine based on a chooser, if you decide to use it
+    // m_autoSelected = m_chooser.getSelected();
+    // switch (m_autoSelected) {
+    //     case kDef: autos.GTFO().cmd().schedule(); break;
+    //     case kB1: autos.A1(kB1).cmd().schedule(); break;
+    //     case kB2: autos.A2(kB2).cmd().schedule(); break;
+    //     case kB3: autos.A3(kB3).cmd().schedule(); break;
+    //     case kR1: autos.A1(kR1).cmd().schedule(); break;
+    //     case kR2: autos.A2(kR2).cmd().schedule(); break;
+    //     case kR3: autos.A3(kR3).cmd().schedule(); break;
+    // }
+
+
+
+
+    // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
+    Commands.sequence(
+      // Move foward for 3 seconds
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      .withVelocityX(-1)).withTimeout(3),
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      .withVelocityX(0)).withTimeout(1),
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      .withVelocityX(1)).withTimeout(3),
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      .withVelocityX(0)).withTimeout(1)
+      
+
+      // // Out-take coral for 3 seconds
+      // Commands.runOnce(() -> Intout.set(Parameters.one)).withTimeout(3),
+      // // end the Out-take 
+      // Commands.runOnce(() -> Intout.set(0))
+    ).schedule();
+    // Now, schedule the Taxi command
+    //autos.Taxi();
+}
+
+    @Override
+  public void teleopInit() {
+
+    drivetrain.applyRequestOnce(
+        () -> new SwerveRequest.FieldCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+            .withVelocityX(0)
+            .withVelocityY(0)
+            .withRotationalRate(0)
+    ).schedule();
+
+    // double targetPosition = SmartDashboard.getNumber("Target Position", 0);
+    // Arm.CLcontroller.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+
+}
+
       @Override
-  public void robotInit() {
+  public void robotInit() { 
     // Set the Limelight to the AprilTag pipeline
   }
 
