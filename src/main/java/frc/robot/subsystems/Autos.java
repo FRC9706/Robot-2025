@@ -30,139 +30,142 @@ public class Autos extends SubsystemBase {
     public Autos() {
         autofact = new AutoFactory(() -> 
         drivetrain.getState().Pose, 
-        pose -> {}, 
+        drivetrain::resetPose, 
         drivetrain::followTrajectory, 
         false, 
         drivetrain);
     }
 
-    public AutoRoutine A1(String name) {
-        AutoRoutine routine = autofact.newRoutine(name);
-        AutoTrajectory GoToReef = routine.trajectory(name, 0);
-        AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
-        AutoTrajectory idklol = routine.trajectory(name, 2);
-        AutoTrajectory GoBackToFeeder = routine.trajectory(name, 3);
-        AutoTrajectory RunAway = routine.trajectory(name, 4);
-        routine.active().onTrue(
-            Commands.sequence(
-                GoToReef.resetOdometry(),
-                GoToReef.cmd(),
-                Commands.runOnce(() -> arm.set(0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
-                GoToFeeder.resetOdometry(),
-                GoToFeeder.cmd(),
-                idklol.resetOdometry(),
-                idklol.cmd(),
-                Commands.runOnce(() -> arm.set(-0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralIntake()),
-                GoBackToFeeder.resetOdometry(),
-                GoBackToFeeder.cmd(),
-                Commands.runOnce(() -> arm.set(1)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                RunAway.resetOdometry(),
-                RunAway.cmd()
-            )
-        );
-        return routine;
+    public void yAndrewTraj() {
+    Command myAndrewTraj = autofact.trajectoryCmd("PGB1.traj");
     }
+    // public AutoRoutine A1(String name) {
+    //     AutoRoutine routine = autofact.newRoutine(name);
+    //     AutoTrajectory GoToReef = routine.trajectory(name, 0);
+    //     AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
+    //     AutoTrajectory idklol = routine.trajectory(name, 2);
+    //     AutoTrajectory GoBackToFeeder = routine.trajectory(name, 3);
+    //     AutoTrajectory RunAway = routine.trajectory(name, 4);
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //             GoToReef.resetOdometry(),
+    //             GoToReef.cmd(),
+    //             Commands.runOnce(() -> arm.set(0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
+    //             GoToFeeder.resetOdometry(),
+    //             GoToFeeder.cmd(),
+    //             idklol.resetOdometry(),
+    //             idklol.cmd(),
+    //             Commands.runOnce(() -> arm.set(-0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralIntake()),
+    //             GoBackToFeeder.resetOdometry(),
+    //             GoBackToFeeder.cmd(),
+    //             Commands.runOnce(() -> arm.set(1)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             RunAway.resetOdometry(),
+    //             RunAway.cmd()
+    //         )
+    //     );
+    //     return routine;
+    // }
 
-    public AutoRoutine A2(String name) {
-        AutoRoutine routine = autofact.newRoutine(name);
-        AutoTrajectory GoToReef = routine.trajectory(name, 0);
-        AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
-        AutoTrajectory idklol = routine.trajectory(name, 2);
-        AutoTrajectory GoBackToFeeder = routine.trajectory(name, 3);
-        AutoTrajectory RunAway = routine.trajectory(name, 4);
-        routine.active().onTrue(
-            Commands.sequence(
-                GoToReef.resetOdometry(),
-                GoToReef.cmd(),
-                Commands.runOnce(() -> arm.set(0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
-                GoToFeeder.resetOdometry(),
-                GoToFeeder.cmd(),
-                idklol.resetOdometry(),
-                idklol.cmd(),
-                Commands.runOnce(() -> arm.set(-0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralIntake()),
-                GoBackToFeeder.resetOdometry(),
-                GoBackToFeeder.cmd(),
-                Commands.runOnce(() -> arm.set(0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                RunAway.resetOdometry(),
-                RunAway.cmd()
-            )
-        );
-        return routine;
-    }
+    // public AutoRoutine A2(String name) {
+    //     AutoRoutine routine = autofact.newRoutine(name);
+    //     AutoTrajectory GoToReef = routine.trajectory(name, 0);
+    //     AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
+    //     AutoTrajectory idklol = routine.trajectory(name, 2);
+    //     AutoTrajectory GoBackToFeeder = routine.trajectory(name, 3);
+    //     AutoTrajectory RunAway = routine.trajectory(name, 4);
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //             GoToReef.resetOdometry(),
+    //             GoToReef.cmd(),
+    //             Commands.runOnce(() -> arm.set(0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
+    //             GoToFeeder.resetOdometry(),
+    //             GoToFeeder.cmd(),
+    //             idklol.resetOdometry(),
+    //             idklol.cmd(),
+    //             Commands.runOnce(() -> arm.set(-0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralIntake()),
+    //             GoBackToFeeder.resetOdometry(),
+    //             GoBackToFeeder.cmd(),
+    //             Commands.runOnce(() -> arm.set(0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             RunAway.resetOdometry(),
+    //             RunAway.cmd()
+    //         )
+    //     );
+    //     return routine;
+    // }
 
-    public AutoRoutine A3(String name) {
-        AutoRoutine routine = autofact.newRoutine(name);
-        AutoTrajectory GoToReef = routine.trajectory(name, 0);
-        AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
-        AutoTrajectory GoBackToFeeder = routine.trajectory(name, 2);
-        AutoTrajectory RunAway = routine.trajectory(name, 3);
-        routine.active().onTrue(
-            Commands.sequence(
-                GoToReef.resetOdometry(),
-                GoToReef.cmd(),
-                Commands.runOnce(() -> arm.set(0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
-                GoToFeeder.resetOdometry(),
-                GoToFeeder.cmd(),
-                Commands.runOnce(() -> arm.set(-0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralIntake()),
-                GoBackToFeeder.resetOdometry(),
-                GoBackToFeeder.cmd(),
-                Commands.runOnce(() -> arm.set(0.5)),
-                Commands.waitSeconds(2),
-                Commands.runOnce(() -> arm.set(0)),
-                Commands.runOnce(() -> Intout.AutoCoralOuttake()),
-                RunAway.resetOdometry(),
-                RunAway.cmd()
-            )
-        );
-        return routine;
-    }
+    // public AutoRoutine A3(String name) {
+    //     AutoRoutine routine = autofact.newRoutine(name);
+    //     AutoTrajectory GoToReef = routine.trajectory(name, 0);
+    //     AutoTrajectory GoToFeeder = routine.trajectory(name, 1);
+    //     AutoTrajectory GoBackToFeeder = routine.trajectory(name, 2);
+    //     AutoTrajectory RunAway = routine.trajectory(name, 3);
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //             GoToReef.resetOdometry(),
+    //             GoToReef.cmd(),
+    //             Commands.runOnce(() -> arm.set(0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             Commands.waitSeconds(Parameters.AutoOuttakeWaitTime),
+    //             GoToFeeder.resetOdometry(),
+    //             GoToFeeder.cmd(),
+    //             Commands.runOnce(() -> arm.set(-0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralIntake()),
+    //             GoBackToFeeder.resetOdometry(),
+    //             GoBackToFeeder.cmd(),
+    //             Commands.runOnce(() -> arm.set(0.5)),
+    //             Commands.waitSeconds(2),
+    //             Commands.runOnce(() -> arm.set(0)),
+    //             Commands.runOnce(() -> Intout.AutoCoralOuttake()),
+    //             RunAway.resetOdometry(),
+    //             RunAway.cmd()
+    //         )
+    //     );
+    //     return routine;
+    // }
     
-    public AutoRoutine GTFO() {
-        AutoRoutine routine = autofact.newRoutine("GTFO");
-        AutoTrajectory GTOF = routine.trajectory("GTOF", 0);
-        routine.active().onTrue(
-            Commands.sequence(
-            GTOF.resetOdometry(),
-            GTOF.cmd()
-            )
-        );
-        return routine;
-    }
+    // public AutoRoutine GTFO() {
+    //     AutoRoutine routine = autofact.newRoutine("GTFO");
+    //     AutoTrajectory GTOF = routine.trajectory("GTOF", 0);
+    //     routine.active().onTrue(
+    //         Commands.sequence(
+    //         GTOF.resetOdometry(),
+    //         GTOF.cmd()
+    //         )
+    //     );
+    //     return routine;
+    // }
 
     public void Taxi() {
             Commands.sequence(
                 Commands.print("yo bro ima move bro"),
-                drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+                drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
                 .withVelocityX(1))
-                .withTimeout(3),
-                drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+                .withTimeout(1),
+                drivetrain.applyRequest(() -> new SwerveRequest.FieldCentric()
                 .withVelocityX(0)).withTimeout(1),
                 Commands.print("yo bro ima stop moving bro")
               ).schedule();

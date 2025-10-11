@@ -29,7 +29,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.Climb2;
+// import frc.robot.subsystems.Climb2;
 import frc.robot.subsystems.Autos;
 
 public class Robot extends TimedRobot {
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private final Arm arm = Arm.getInstance();
   // private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
-  private final Climb2 climb2 = Climb2.getInstance();
+  // private final Climb2 climb2 = Climb2.getInstance();
   private final Autos autos = Autos.getInstance();
   private static final String kDef = "GTFO";
   private static final String kB1 = "PGB1";
@@ -120,26 +120,28 @@ public class Robot extends TimedRobot {
         )
     );
 
-    driverController.b().onTrue(
-      Commands.runOnce(() -> {
-          climb.climb();
-          climb2.climb2();
-      }, climb, climb2)
-  );
-
-    // driverController.y().whileTrue(
-    //   Commands.run(() -> {
-    //       drivetrain.goToAprilTag();
-    //   }, drivetrain)
-    //   .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
-    // );
-
-    driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
-
-  //   driverController.y().onTrue(
+  //   driverController.b().onTrue(
   //     Commands.runOnce(() -> {
-  //         climb.goToRot(1);
-  //         climb2.goToRot2(1);
+  //         climb.climb();
+  //         climb2.climb2();
+  //     }, climb, climb2)
+  // );
+
+    driverController.y().whileTrue(
+      Commands.run(() -> {
+          drivetrain.goToAprilTag();
+      }, drivetrain)
+      //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
+    );
+
+    // driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
+
+    driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
+
+  //   driverController.b().onTrue(
+  //     Commands.runOnce(() -> {
+  //         climb.goToRot(5);
+  //         climb2.goToRot2(5);
   //     }, climb, climb2)
   // );
 
@@ -228,14 +230,14 @@ public class Robot extends TimedRobot {
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
     Commands.sequence(
       // Move foward for 3 seconds
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      .withVelocityX(-1)).withTimeout(3),
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      .withVelocityX(0)).withTimeout(1),
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      .withVelocityX(1)).withTimeout(3),
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      .withVelocityX(0)).withTimeout(1)
+      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      // .withVelocityX(-1)).withTimeout(0.5),
+      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      // .withVelocityX(0)).withTimeout(1),
+      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      // .withVelocityX(1)).withTimeout(0.5),
+      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
+      // .withVelocityX(0)).withTimeout(1)
       
 
       // // Out-take coral for 3 seconds
@@ -244,7 +246,7 @@ public class Robot extends TimedRobot {
       // Commands.runOnce(() -> Intout.set(0))
     ).schedule();
     // Now, schedule the Taxi command
-    //autos.Taxi();
+    autos.Taxi();
 }
 
     @Override

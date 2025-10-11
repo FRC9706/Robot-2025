@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DetectorConstants;
 import frc.robot.Limelight;
+import frc.robot.LimelightHelpers;
 //import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 import frc.robot.Parameters.CTRESwerveDrivetrain;
@@ -162,7 +163,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     double kPforward = 0.05;   // Forward control
     double kPstrafe = 0.035;   // Side-to-side correction
     double kProtation = 0.02;  // rotational adjustment
-    double areaTarget = 4.0;   // tag area for stopping distance
+    double areaTarget = 6.0;   // tag area for stopping distance
     
     // Deadbands
     double txDeadband = 1.0;
@@ -203,31 +204,31 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
 
-    // // Limelight Variables
-    // private boolean v;
-    // private double x;
-    // private double y;
+    // Limelight Variables
+    private boolean v;
+    private double x;
+    private double y;
 
-    // public void goToLimelight() {
-    //     boolean v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
-    //     double tx = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
-    //     double ty = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+    public void goToLimelight() {
+        boolean v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
+        double tx = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+        double ty = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
     
-    //     double kP = 0.06;
+        double kP = 0.06;
     
-    //     if (v) {
-    //         // Move toward the target
-    //         this.setControl(new SwerveRequest.FieldCentric()
-    //             .withVelocityX(ty * kP)  // Forward/backward correction
-    //             .withVelocityY(tx * kP)  // Left/right correction
-    //             .withRotationalRate(0));
-    //     } else {
-    //         // No target found
-    //         System.out.println("BRO WHERE IS THE april tag");
-    //         this.setControl(new SwerveRequest.FieldCentric()
-    //             .withVelocityX(0)
-    //             .withVelocityY(0)
-    //             .withRotationalRate(0));
-    //     }
-    // }    
+        if (v) {
+            // Move toward the target
+            this.setControl(new SwerveRequest.FieldCentric()
+                .withVelocityX(ty * kP)  // Forward/backward correction
+                .withVelocityY(tx * kP)  // Left/right correction
+                .withRotationalRate(0));
+        } else {
+            // No target found
+            System.out.println("BRO WHERE IS THE april tag");
+            this.setControl(new SwerveRequest.FieldCentric()
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withRotationalRate(0));
+        }
+    }    
 };

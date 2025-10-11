@@ -76,6 +76,7 @@ public class Climb extends SubsystemBase {
         climbMotor2.getConfigurator().apply(talonFXConfigs2);
         climbMotor2.setControl(new Follower(Parameters.kClimbMotorID, false)); // true was ben 10 iq
 
+
         climbMotor.setPosition(0);
         climbMotor2.setPosition(0);
     }
@@ -97,5 +98,6 @@ public class Climb extends SubsystemBase {
 
     public void goToRot(double rot) {
         climbMotor.setControl(m_request.withPosition(rot));
+
     }
 }
