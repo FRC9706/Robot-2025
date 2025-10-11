@@ -20,19 +20,50 @@ public class Parameters {
 
         // CLIMB
 
+        public static final double kStatorCurrent = 60;
+        public static final double kSupplyCurrent = 40;
+
+        public static final CurrentLimitsConfigs currentConfigs = 
+                new CurrentLimitsConfigs()
+                        .withStatorCurrentLimit(kStatorCurrent)
+                        .withSupplyCurrentLimit(kSupplyCurrent)
+                        .withStatorCurrentLimitEnable(true)
+                        .withSupplyCurrentLimitEnable(true)
+                        .withSupplyCurrentLowerLimit(kSupplyCurrent)
+                        .withSupplyCurrentLowerTime(0);
+
+        public static final CurrentLimitsConfigs climbCurConfigs = 
+                new CurrentLimitsConfigs()
+                        .withStatorCurrentLimitEnable(false)
+                        .withSupplyCurrentLimit(kStatorCurrent)
+                        .withSupplyCurrentLimitEnable(true)
+                        .withSupplyCurrentLowerLimit(kSupplyCurrent)
+                        .withSupplyCurrentLowerTime(0);
+
         public static final double gearRatio = 1;
         public static final int kClimbMotorID = 21;
+        public static final int kClimbMotorID2 = 22;
+
+//         public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
+//         .withCANBusName(kCANBus.getName())
+//         .withPigeon2Id(kPigeonId);
+
+// public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft = ConstantCreator
+//         .createModuleConstants(
+//                 kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset,
+//                 kFrontLeftXPos, kFrontLeftYPos, kInvertLeftSide, kFrontLeftSteerMotorInverted,
+//                 kFrontLeftEncoderInverted);
 
         // INTAKE/OUTTAKE
 
         public static final int kIntakeMotorID = 13;
         public static final boolean kMotorReversed = false;
         // literally the dumbest constant I have ever had to code
-        public static final int one = kMotorReversed ? -1 : 1;
+        public static final double one = kMotorReversed ? -1 : 1;
         public static final int kShootDuration = 2;
         public static final int kIntakeDuration = 2;
-        public static final int kCoralLimitSwitchID = 1;
-        public static final int kAlgaeLimitSwitchID = 0;
+        public static final int kCoralLimitSwitchID = 8;
+        public static final int kAlgaeLimitSwitchID = 9;
 
         // DETECTOR
 
@@ -42,9 +73,13 @@ public class Parameters {
         // ARM
 
         public static final int kArmMotorID = 14;
-        public static final int kArmPos1 = 0; // encoder counts
-        public static final int kArmPos2 = 50; // encoder counts
-        public static final int kArmAlgae = 25; // encoder counts
+        public static final double mxOut = 0.5;
+        public static final double minOut = -0.5;
+        public static final double grabCor = -53;
+        public static final double grabAL = -20;
+        public static final double retract = -10;
+        public static final double velFF = 1.0 / 5767;
+
         // rest of these are just reminders, NOT USED
         public static final double kArmPgain = 0.065;
         public static final double kArmIgain = 0;
@@ -57,7 +92,7 @@ public class Parameters {
 
     // PID Values for the Steering Motors
     private static final Slot0Configs steerGains = new Slot0Configs()
-            .withKP(70).withKI(0).withKD(0.1)
+            .withKP(5).withKI(0).withKD(0) //P70 D0.1
             .withKS(0.1).withKV(1.91).withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
@@ -20,6 +21,9 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.DetectorConstants;
+import frc.robot.Limelight;
+//import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 import frc.robot.Parameters.CTRESwerveDrivetrain;
 
@@ -45,6 +49,10 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public Command applyRequestOnce(Supplier<SwerveRequest> requestSupplier) {
+        return runOnce(() -> this.setControl(requestSupplier.get()));
     }
 
     // public void goToAngle(double DesiredAngle, Swerve drivebase) {
@@ -140,4 +148,86 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         });
         simNotifier.startPeriodic(kSimLoopPeriod);
     }
-}
+
+
+
+    public void goToAprilTag() {
+    // Get Limelight readings
+    double tv = Limelight.getV(); // Valid target (0 = no, 1 = yes)
+    double tx = Limelight.getX(); // Horizontal offset (+ = right)
+    double ty = Limelight.getY(); // Vertical offset (+ = up)
+    double ta = Limelight.getA(); // Target area (indicator for distance)
+    
+    // Tuning constants
+    double kPforward = 0.05;   // Forward control
+    double kPstrafe = 0.035;   // Side-to-side correction
+    double kProtation = 0.02;  // rotational adjustment
+    double areaTarget = 4.0;   // tag area for stopping distance
+    
+    // Deadbands
+    double txDeadband = 1.0;
+    double tyDeadband = 1.0;
+
+    if (tv < 1.0) {
+        // No tag detected
+        System.out.println("No AprilTag found just like your father.");
+        this.setControl(new SwerveRequest.FieldCentric()
+            .withVelocityX(0)
+            .withVelocityY(0)
+            .withRotationalRate(0));
+        return;
+    }
+
+    // Proportional forward control using area (closer = larger ta)
+    double forwardCommand = (areaTarget - ta) * kPforward;
+    if (Math.abs(areaTarget - ta) < 0.2) forwardCommand = 0; // stop near target
+    
+    // Horizontal centering correction
+    double strafeCommand = 0;
+    if (Math.abs(tx) > txDeadband) strafeCommand = tx * kPstrafe;
+
+    // rotational control to ensure not angled relative to tag
+    double rotateCommand = 0;
+    if (Math.abs(tx) > txDeadband) rotateCommand = tx * kProtation;
+    
+    // Clamp speeds to prevent aggressive jumping
+    forwardCommand = Math.max(-1, Math.min(1, forwardCommand));
+    strafeCommand = Math.max(-1, Math.min(1, strafeCommand));
+    rotateCommand = Math.max(-1, Math.min(1, rotateCommand));
+
+    // Apply movement control
+    this.setControl(new SwerveRequest.FieldCentric()
+        .withVelocityX(forwardCommand)
+        .withVelocityY(-strafeCommand)
+        .withRotationalRate(-rotateCommand));
+    }
+
+
+    // // Limelight Variables
+    // private boolean v;
+    // private double x;
+    // private double y;
+
+    // public void goToLimelight() {
+    //     boolean v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
+    //     double tx = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+    //     double ty = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+    
+    //     double kP = 0.06;
+    
+    //     if (v) {
+    //         // Move toward the target
+    //         this.setControl(new SwerveRequest.FieldCentric()
+    //             .withVelocityX(ty * kP)  // Forward/backward correction
+    //             .withVelocityY(tx * kP)  // Left/right correction
+    //             .withRotationalRate(0));
+    //     } else {
+    //         // No target found
+    //         System.out.println("BRO WHERE IS THE april tag");
+    //         this.setControl(new SwerveRequest.FieldCentric()
+    //             .withVelocityX(0)
+    //             .withVelocityY(0)
+    //             .withRotationalRate(0));
+    //     }
+    // }    
+};

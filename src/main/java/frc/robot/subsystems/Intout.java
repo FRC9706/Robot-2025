@@ -26,26 +26,50 @@ public class Intout extends SubsystemBase {
     }
 
     public static void outtake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(Parameters.one)), Commands.waitSeconds(Parameters.kShootDuration), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(Parameters.one)), 
+            Commands.waitSeconds(Parameters.kShootDuration), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 
     public static void intake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(-Parameters.one)), Commands.waitSeconds(Parameters.kIntakeDuration), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(-Parameters.one)), 
+            Commands.waitSeconds(Parameters.kIntakeDuration), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 
     public static void AutoCoralOuttake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(Parameters.one)), Commands.waitUntil(() -> !coralSwitch.get()), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(Parameters.one)), 
+            Commands.waitUntil(() -> !coralSwitch.get()), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 
     public static void AutoCoralIntake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(-Parameters.one)), Commands.waitUntil(() -> coralSwitch.get()), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(-Parameters.one)), 
+            Commands.waitUntil(() -> coralSwitch.get()), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 
     public static void AutoAlgaeIntake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(-Parameters.one)), Commands.waitUntil(() -> algaeSwitch.get()), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(-Parameters.one)), 
+            Commands.waitUntil(() -> algaeSwitch.get()), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 
     public static void AutoAlgaeOuttake() {
-        Commands.sequence(Commands.runOnce(() -> intout.set(Parameters.one)), Commands.waitUntil(() -> !algaeSwitch.get()), Commands.runOnce(() -> intout.set(0)));
+        Commands.sequence(
+            Commands.runOnce(() -> intout.set(Parameters.one)), 
+            Commands.waitUntil(() -> !algaeSwitch.get()), 
+            Commands.runOnce(() -> intout.set(0))
+        );
     }
 }
