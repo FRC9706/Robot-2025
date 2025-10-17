@@ -14,6 +14,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+// previous failed fix counter: 14 different people
+
 public class Autos extends SubsystemBase {
 
     // private final AutoFactory autofact;

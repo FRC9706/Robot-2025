@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
+import frc.robot.subsystems.Music;
 import frc.robot.subsystems.Climb;
 // import frc.robot.subsystems.Climb2;
 import frc.robot.subsystems.Autos;
@@ -136,7 +137,9 @@ public class Robot extends TimedRobot {
 
     // driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
 
-    driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
+    // driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
+
+    driverController.b().onTrue(Commands.runOnce(() -> Music.playAll("orch/eri.chrp")));
 
   //   driverController.b().onTrue(
   //     Commands.runOnce(() -> {
@@ -225,18 +228,26 @@ public class Robot extends TimedRobot {
     // }
 
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
+
+    // This code works on magic dont touch
     Commands.sequence(
       Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
       Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
 
       Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
-          .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 7.9),
-      Commands.runOnce(() -> Arm.goToPos(Parameters.grabAL), drivetrain),
-      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.grabAL) < 0.5),
+          .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
+      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
 
-      Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
       Commands.waitSeconds(0.5),
-      Commands.runOnce(() -> Intout.set(0), Intout.getInstance())
+      Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor), drivetrain),
+      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.grabCor) < 0.5),
+
+      Commands.waitSeconds(1),
+      Commands.runOnce(() -> Intout.set(-Parameters.oneQuarted), Intout.getInstance()),
+      Commands.waitSeconds(0.5),
+      Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
+      Commands.runOnce(() -> Arm.goToPos(Parameters.retract))
   
 
       // Move foward for 3 seconds

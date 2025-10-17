@@ -163,7 +163,7 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     double kPforward = 0.05;   // Forward control
     double kPstrafe = 0.035;   // Side-to-side correction
     double kProtation = 0.02;  // rotational adjustment
-    double areaTarget = 9.0;   // tag area for stopping distance
+    double areaTarget = 10.0;   // tag area for stopping distance
     
     // Deadbands
     double txDeadband = 1.0;
