@@ -13,7 +13,7 @@ public class Limelight {
     
         public static double getA() {
             return limelightTable.getEntry("ta").getDouble(0.0);
-    }
+        }
         public static double getX() {
             return limelightTable.getEntry("tx").getDouble(0.0);
         }

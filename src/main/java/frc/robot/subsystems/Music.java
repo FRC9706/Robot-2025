@@ -16,20 +16,21 @@ public class Music {
     public static void initAllMotors() {
         allMotors.clear();
 
-        // Add drivetrain TalonFXs
+        // Add drivetrain TalonFX motors
         allMotors.add(new TalonFX(Parameters.kFrontLeftDriveMotorId));
         allMotors.add(new TalonFX(Parameters.kFrontRightDriveMotorId));
         allMotors.add(new TalonFX(Parameters.kBackLeftDriveMotorId));
         allMotors.add(new TalonFX(Parameters.kBackRightDriveMotorId));
 
+        // Add steering TalonFX motors
         allMotors.add(new TalonFX(Parameters.kFrontLeftSteerMotorId));
         allMotors.add(new TalonFX(Parameters.kFrontRightSteerMotorId));
         allMotors.add(new TalonFX(Parameters.kBackLeftSteerMotorId));
         allMotors.add(new TalonFX(Parameters.kBackRightSteerMotorId));
     }
 
-    // Play a music file on all motors
-    public static void playAll(String track) {
+    // Load the music file onto all motors (call this once before play)
+    public static void loadAll(String track) {
         if (m_orchestra == null) {
             m_orchestra = new Orchestra();
             initAllMotors();
@@ -37,35 +38,52 @@ public class Music {
                 m_orchestra.addInstrument(motor);
             }
         }
-
         var status = m_orchestra.loadMusic(track);
-
         if (status.isOK()) {
             System.out.println("Loaded track: " + track);
-            var playStatus = m_orchestra.play();
-            if (!playStatus.isOK()) {
-                System.out.println("Error: Could not start playing music.");
-            }
         } else {
-            System.out.println("Failed to load track: " + track);
+            System.out.println("Failed to load music: " + status.toString());
         }
     }
 
+
+    // Start or resume music playback (assumes music already loaded)
+    public static void playAll() {
+        if (m_orchestra != null) {
+            var playStatus = m_orchestra.play();
+            if (playStatus.isOK()) {
+                System.out.println("Playing music!");
+            } else {
+                System.out.println("Error: Could not start playing music.");
+            }
+        }
+    }
+
+    // Stop music playback and release control of the motors
     public static void stopAll() {
         if (m_orchestra != null) {
             m_orchestra.stop();
+            System.out.println("Music stopped.");
         }
     }
 
+    // Pause music playback
     public static void pauseAll() {
         if (m_orchestra != null) {
             m_orchestra.pause();
+            System.out.println("Music paused.");
         }
     }
 
+    // Unpause/resume music playback
     public static void unpauseAll() {
         if (m_orchestra != null) {
-            m_orchestra.play();
+            var playStatus = m_orchestra.play();
+            if (playStatus.isOK()) {
+                System.out.println("Music resumed.");
+            } else {
+                System.out.println("Error: Could not resume music.");
+            }
         }
     }
 }

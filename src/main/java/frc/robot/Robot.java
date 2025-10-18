@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -13,6 +14,8 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.hal.simulation.DriverStationDataJNI;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -38,7 +41,7 @@ public class Robot extends TimedRobot {
   // initialize subsystems
   private final Swerve drivetrain = Parameters.createDrivetrain();
   private final Arm arm = Arm.getInstance();
-  // private final Intout intout = new Intout();
+  private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
   // private final Climb2 climb2 = Climb2.getInstance();
   private final Autos autos = Autos.getInstance();
@@ -137,9 +140,9 @@ public class Robot extends TimedRobot {
 
     // driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
 
-    // driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
+    driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
 
-    driverController.b().onTrue(Commands.runOnce(() -> Music.playAll("orch/eri.chrp")));
+    
 
   //   driverController.b().onTrue(
   //     Commands.runOnce(() -> {
@@ -236,19 +239,21 @@ public class Robot extends TimedRobot {
 
       Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
           .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
-      drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
+          drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
+          drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
+
 
       Commands.waitSeconds(0.5),
       Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor), drivetrain),
       Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.grabCor) < 0.5),
 
       Commands.waitSeconds(1),
-      Commands.runOnce(() -> Intout.set(-Parameters.oneQuarted), Intout.getInstance()),
+      Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
       Commands.waitSeconds(0.5),
       Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
       Commands.runOnce(() -> Arm.goToPos(Parameters.retract))
-  
+
+      
 
       // Move foward for 3 seconds
       // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()

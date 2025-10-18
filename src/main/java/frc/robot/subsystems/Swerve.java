@@ -12,13 +12,16 @@ import choreo.trajectory.SwerveSample;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 // import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DetectorConstants;
@@ -149,6 +152,50 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
         });
         simNotifier.startPeriodic(kSimLoopPeriod);
     }
+    
+    
+    // Constants for PID tuning and target positioning
+    private static final double kPPosition = 0.05;
+    private static final double kPYaw = 0.02;
+    private static final double targetAreaSetpoint = 10.0; // Example area for stopping near tag
+
+    // public void goToAprilTag() {
+    //     // Get Limelight target data from network tables
+    //     boolean targetVisible = LimelightHelpers.getTV("limelight");
+    //     double tx = LimelightHelpers.getTX("limelight"); // Horizontal offset (degrees)
+    //     double ty = LimelightHelpers.getTY("limelight"); // Vertical offset (degrees)
+    //     double ta = LimelightHelpers.getTA("limelight"); // Target area (proxy for distance)
+
+    //     if (!targetVisible) {
+    //         // No target found, stop robot safely
+    //         this.setControl(new SwerveRequest.FieldCentric()
+    //             .withVelocityX(0)
+    //             .withVelocityY(0)
+    //             .withRotationalRate(0));
+    //         return;
+    //     }
+
+    //     // Forward/backward control based on target area error
+    //     double forwardCommand = (targetAreaSetpoint - ta) * kPPosition;
+    //     forwardCommand = Math.max(-1, Math.min(1, forwardCommand)); // Clamp
+
+    //     // Left/right strafing based on horizontal offset (tx)
+    //     double strafeCommand = tx * kPPosition;
+    //     strafeCommand = Math.max(-1, Math.min(1, strafeCommand)); // Clamp
+
+    //     // Rotational control based on horizontal offset (tx) to align robot yaw
+    //     double rotateCommand = tx * kPYaw;
+    //     rotateCommand = Math.max(-1, Math.min(1, rotateCommand)); // Clamp
+
+    //     // Apply commands safely to drivetrain (field-centric)
+    //     this.setControl(new SwerveRequest.FieldCentric()
+    //         .withVelocityX(forwardCommand)
+    //         .withVelocityY(-strafeCommand) // Invert if necessary based on your orientation
+    //         .withRotationalRate(-rotateCommand)); // Invert if necessary for your setup
+    // }
+
+    
+
 
 
 
@@ -204,31 +251,31 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     }
 
 
-    // Limelight Variables
-    private boolean v;
-    private double x;
-    private double y;
+//     // Limelight Variables
+//     private boolean v;
+//     private double x;
+//     private double y;
 
-    public void goToLimelight() {
-        boolean v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
-        double tx = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
-        double ty = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
+//     public void goToLimelight() {
+//         boolean v = LimelightHelpers.getTV(DetectorConstants.kLimelightName);
+//         double tx = LimelightHelpers.getTX(DetectorConstants.kLimelightName);
+//         double ty = LimelightHelpers.getTY(DetectorConstants.kLimelightName);
     
-        double kP = 0.06;
+//         double kP = 0.06;
     
-        if (v) {
-            // Move toward the target
-            this.setControl(new SwerveRequest.FieldCentric()
-                .withVelocityX(ty * kP)  // Forward/backward correction
-                .withVelocityY(tx * kP)  // Left/right correction
-                .withRotationalRate(0));
-        } else {
-            // No target found
-            System.out.println("BRO WHERE IS THE april tag");
-            this.setControl(new SwerveRequest.FieldCentric()
-                .withVelocityX(0)
-                .withVelocityY(0)
-                .withRotationalRate(0));
-        }
-    }    
-};
+//         if (v) {
+//             // Move toward the target
+//             this.setControl(new SwerveRequest.FieldCentric()
+//                 .withVelocityX(ty * kP)  // Forward/backward correction
+//                 .withVelocityY(tx * kP)  // Left/right correction
+//                 .withRotationalRate(0));
+//         } else {
+//             // No target found
+//             System.out.println("BRO WHERE IS THE april tag");
+//             this.setControl(new SwerveRequest.FieldCentric()
+//                 .withVelocityX(0)
+//                 .withVelocityY(0)
+//                 .withRotationalRate(0));
+//         }
+//     }    
+ };

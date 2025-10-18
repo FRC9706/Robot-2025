@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -73,15 +73,15 @@ public class Climb extends SubsystemBase {
 
         climbMotor.getConfigurator().apply(talonFXConfigs);
 
-        climbMotor2.getConfigurator().apply(talonFXConfigs2);
-        climbMotor2.setControl(new Follower(Parameters.kClimbMotorID, false)); // true was ben 10 iq
+        climbMotor2.getConfigurator().apply(talonFXConfigs);
+        climbMotor2.setControl(new Follower(climbMotor.getDeviceID(), true));
 
 
         climbMotor.setPosition(0);
         climbMotor2.setPosition(0);
     }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    final DutyCycleOut m_request = new DutyCycleOut(0);
 
     public void climb() {
             if (isRunning) {
@@ -97,7 +97,7 @@ public class Climb extends SubsystemBase {
     }
 
     public void goToRot(double rot) {
-        climbMotor.setControl(m_request.withPosition(rot));
+        climbMotor.setControl(m_request.withOutput(0.1));
 
     }
 }
