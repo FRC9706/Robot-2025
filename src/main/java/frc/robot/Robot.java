@@ -32,7 +32,6 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intout;
 import frc.robot.subsystems.Music;
 import frc.robot.subsystems.Climb;
-// import frc.robot.subsystems.Climb2;
 import frc.robot.subsystems.Autos;
 
 public class Robot extends TimedRobot {
@@ -42,7 +41,6 @@ public class Robot extends TimedRobot {
   private final Arm arm = Arm.getInstance();
   private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
-  // private final Climb2 climb2 = Climb2.getInstance();
   private final Autos autos = Autos.getInstance();
   private static final String kDef = "GTFO";
   private static final String kB1 = "PGB1";

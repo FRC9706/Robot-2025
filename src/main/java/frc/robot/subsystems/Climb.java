@@ -13,6 +13,8 @@ public class Climb extends SubsystemBase {
     public static final TalonFX climbMotor = new TalonFX(Parameters.kClimbMotorID);
     public static final TalonFX climbMotor2 = new TalonFX(Parameters.kClimbMotorID2);
 
+    public static boolean rachetSafetyTriggered = false;
+
     private boolean isRunning = false;
     public static Climb mInstance = null;
     public static Climb getInstance() {
@@ -101,19 +103,28 @@ public class Climb extends SubsystemBase {
     }
 
     public void goToRot(double rot) {
-        if (climbMotor.getPosition().getValueAsDouble() < rot) {
+        double currentRot = getClimberPos();
+        double tolerance = 0.5;
+
+        if ((climbMotor.getPosition().getValueAsDouble() < rot) && (Math.abs(currentRot - rot) > tolerance)) {
             climbMotor.setControl(m_request.withPosition(rot));
+            rachetSafetyTriggered = false;
         } else {
-            climbMotor.setControl(m_request.withPosition(climbMotor.getPosition().getValueAsDouble()));
-            System.out.println("Climber: She climb on my rachet till rotate");
+            climbMotor.stopMotor();
+            System.out.println("Climber: She climb on my rachet but I wont rotate");
         }
-        
     }
 
-    // public void periodic() {
-    //     if (climbMotor.getPosition().getValueAsDouble() > climbMotor.getClosedLoopReference().getValueAsDouble()) {
-    //         climbMotor.setControl(m_request.withPosition(climbMotor.getPosition().getValueAsDouble()));
-    //         System.out.println("Climber: She climb on my rachet till rotate");
-    //     }
-    // }
+    public void periodic() {
+        double currentPos = getClimberPos();
+        double targetPos = m_request.Position;
+
+        if ((currentPos > targetPos) && (m_request.Position > 0)) {
+            if (!rachetSafetyTriggered) {
+                climbMotor.stopMotor();
+                System.out.println("Climber: She climb on my rachet but I wont rotate");
+                rachetSafetyTriggered = true;
+            }
+         }
+    }
 }
