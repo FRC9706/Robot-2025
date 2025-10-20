@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -74,14 +74,14 @@ public class Climb extends SubsystemBase {
         climbMotor.getConfigurator().apply(talonFXConfigs);
 
         climbMotor2.getConfigurator().apply(talonFXConfigs);
-        climbMotor2.setControl(new Follower(climbMotor.getDeviceID(), true));
+        climbMotor2.setControl(new Follower(climbMotor.getDeviceID(), true)); // true was ben 10 iq
 
 
         climbMotor.setPosition(0);
         climbMotor2.setPosition(0);
     }
 
-    final DutyCycleOut m_request = new DutyCycleOut(0);
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
     public void climb() {
             if (isRunning) {
@@ -96,8 +96,24 @@ public class Climb extends SubsystemBase {
         return input*5.091;
     }
 
-    public void goToRot(double rot) {
-        climbMotor.setControl(m_request.withOutput(0.1));
-
+    public double getClimberPos() {
+        return climbMotor.getPosition().getValueAsDouble();
     }
+
+    public void goToRot(double rot) {
+        if (climbMotor.getPosition().getValueAsDouble() < rot) {
+            climbMotor.setControl(m_request.withPosition(rot));
+        } else {
+            climbMotor.setControl(m_request.withPosition(climbMotor.getPosition().getValueAsDouble()));
+            System.out.println("Climber: She climb on my rachet till rotate");
+        }
+        
+    }
+
+    // public void periodic() {
+    //     if (climbMotor.getPosition().getValueAsDouble() > climbMotor.getClosedLoopReference().getValueAsDouble()) {
+    //         climbMotor.setControl(m_request.withPosition(climbMotor.getPosition().getValueAsDouble()));
+    //         System.out.println("Climber: She climb on my rachet till rotate");
+    //     }
+    // }
 }

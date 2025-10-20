@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -291,6 +290,7 @@ public class Robot extends TimedRobot {
 
       @Override
   public void robotInit() { 
+    
     // Set the Limelight to the AprilTag pipeline
   }
 
