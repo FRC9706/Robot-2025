@@ -76,10 +76,14 @@ public class Parameters {
         public static final int kArmMotorID = 14;
         public static final double mxOut = 0.5;
         public static final double minOut = -0.5;
-        public static final double grabAL = -53;
-        public static final double grabCor = -24;
+        public static final double shootCor = -27;
+        public static final double grabCor = -57;
+        public static final double holdAl = -47;
+        public static final double grabAl = -39;
+        public static final double lowered = -45;
         public static final double retract = -10;
         public static final double velFF = 1.0 / 5767;
+
 
         // rest of these are just reminders, NOT USED
         public static final double kArmPgain = 0.065;

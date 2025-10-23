@@ -128,16 +128,19 @@ public class Robot extends TimedRobot {
   //     }, climb, climb2)
   // );
 
-    driverController.y().whileTrue(
-      Commands.run(() -> {
-          drivetrain.goToAprilTag();
-      }, drivetrain)
-      //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
-    );
+    // driverController.y().whileTrue(
+    //   Commands.run(() -> {
+    //       drivetrain.goToAprilTag();
+    //   }, drivetrain)
+    //   //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
+    // );
 
     // driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
+    
+    driverController.b().onTrue(Commands.runOnce(() -> Climb.goToRotPlusOne()));
 
-    driverController.b().onTrue(Commands.runOnce(() -> climb.goToRot(5)));
+    driverController.y().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.lowered)));
+   
 
     
 
@@ -241,8 +244,8 @@ public class Robot extends TimedRobot {
 
 
       Commands.waitSeconds(0.5),
-      Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor), drivetrain),
-      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.grabCor) < 0.5),
+      Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor), drivetrain),
+      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
 
       Commands.waitSeconds(1),
       Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
@@ -289,12 +292,10 @@ public class Robot extends TimedRobot {
       @Override
   public void robotInit() { 
     
-    // Set the Limelight to the AprilTag pipeline
   }
 
   @Override
   public void robotPeriodic() {
-    
     CommandScheduler.getInstance().run();
   }
 

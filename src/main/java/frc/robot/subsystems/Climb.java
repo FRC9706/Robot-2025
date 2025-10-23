@@ -83,31 +83,49 @@ public class Climb extends SubsystemBase {
         climbMotor2.setPosition(0);
     }
 
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-
-    public void climb() {
-            if (isRunning) {
-                climbMotor.set(0);
-            } else {
-                climbMotor.set(1);
+    final static MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    
+        public void climb() {
+                if (isRunning) {
+                    climbMotor.set(0);
+                } else {
+                    climbMotor.set(1);
+                }
+                isRunning = !isRunning; // even better
+        }
+    
+        public double armDegsToMotorDegs(double input) {
+            return input*5.091;
+        }
+    
+        public static double getClimberPos() {
+                return climbMotor.getPosition().getValueAsDouble();
             }
-            isRunning = !isRunning; // even better
-    }
-
-    public double armDegsToMotorDegs(double input) {
-        return input*5.091;
-    }
-
-    public double getClimberPos() {
-        return climbMotor.getPosition().getValueAsDouble();
-    }
-
-    public void goToRot(double rot) {
-        double currentRot = getClimberPos();
-        double tolerance = 0.5;
-
-        if ((climbMotor.getPosition().getValueAsDouble() < rot) && (Math.abs(currentRot - rot) > tolerance)) {
-            climbMotor.setControl(m_request.withPosition(rot));
+        
+            public void goToRot(double rot) {
+                double currentRot = getClimberPos();
+                double tolerance = 0.5;
+        
+                if ((climbMotor.getPosition().getValueAsDouble() < rot) && (Math.abs(currentRot - rot) > tolerance) && (Arm.getPos() < -50)) {
+                    climbMotor.setControl(m_request.withPosition(rot));
+                    rachetSafetyTriggered = false;
+                } else {
+                    climbMotor.stopMotor();
+                    System.out.println("Climber: She climb on my rachet but I wont rotate");
+                }
+            }
+        
+            static double addedRot = 2;
+        
+            public static void goToRotPlusOne() {
+                double currentRot = getClimberPos();
+            double tolerance = 0.5;
+    
+            if ((climbMotor.getPosition().getValueAsDouble() < addedRot) && (Math.abs(currentRot - addedRot) > tolerance) && (Arm.getPos() < -50)) {
+                climbMotor.setControl(m_request.withPosition(addedRot));
+            System.out.println("rot I just went to: " + addedRot);
+            addedRot += 1;
+            System.out.println("New rot I will go to on next button press: " + addedRot);
             rachetSafetyTriggered = false;
         } else {
             climbMotor.stopMotor();
