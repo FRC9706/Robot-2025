@@ -43,6 +43,7 @@ public class Parameters {
         public static final double gearRatio = 1;
         public static final int kClimbMotorID = 21;
         public static final int kClimbMotorID2 = 22;
+        
 
 //         public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
 //         .withCANBusName(kCANBus.getName())
@@ -78,7 +79,7 @@ public class Parameters {
         public static final double minOut = -0.5;
         public static final double shootCor = -27;
         public static final double grabCor = -57;
-        public static final double holdAl = -47;
+        public static final double holdAl = -4;
         public static final double grabAl = -39;
         public static final double lowered = -45;
         public static final double retract = -10;
