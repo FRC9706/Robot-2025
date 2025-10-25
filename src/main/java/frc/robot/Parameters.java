@@ -43,7 +43,6 @@ public class Parameters {
         public static final double gearRatio = 1;
         public static final int kClimbMotorID = 21;
         public static final int kClimbMotorID2 = 22;
-        
 
 //         public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
 //         .withCANBusName(kCANBus.getName())
@@ -188,7 +187,7 @@ public class Parameters {
     public static final int kFrontLeftDriveMotorId = 7;
     public static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 12;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.353 + 3d/8 + 1d/2);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.352 + 3d/8 + 1d/2);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -199,7 +198,7 @@ public class Parameters {
     public static final int kFrontRightDriveMotorId = 1;
     public static final int kFrontRightSteerMotorId = 2;
     private static final int kFrontRightEncoderId = 9;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.238 + 1d/8 + 1d/2);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.242 + 1d/8 + 1d/2);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -210,7 +209,7 @@ public class Parameters {
     public static final int kBackLeftDriveMotorId = 5;
     public static final int kBackLeftSteerMotorId = 6;
     private static final int kBackLeftEncoderId = 11;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.491 - 3d/8 + 1d/2);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.500 - 3d/8 + 1d/2);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
