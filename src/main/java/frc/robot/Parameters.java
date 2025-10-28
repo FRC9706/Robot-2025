@@ -95,16 +95,32 @@ public class Parameters {
 
         // Swerve
 
+        // Steer PID Values
+        public static final double kSteerPgain = 5;
+        public static final double kSteerIgain = 0;
+        public static final double kSteerDgain = 0;
+        public static final double kSteerSgain = 0.1;
+        public static final double kSteerVgain = 1.91;
+        public static final double kSteerAgain = 0;
+
+        // Drive PID Values
+        public static final double kDrivePgain = 0.1;
+        public static final double kDriveIgain = 0;
+        public static final double kDriveDgain = 0;
+        public static final double kDriveSgain = 0.1;
+        public static final double kDriveVgain = 1.91;
+        public static final double kDriveAgain = 0;
+
     // PID Values for the Steering Motors
-    private static final Slot0Configs steerGains = new Slot0Configs()
-            .withKP(5).withKI(0).withKD(0) //P70 D0.1
-            .withKS(0.1).withKV(1.91).withKA(0)
+    public static final Slot0Configs steerGains = new Slot0Configs()
+            .withKP(kSteerPgain).withKI(kSteerIgain).withKD(kSteerDgain) //P70 D0.1
+            .withKS(kSteerSgain).withKV(kSteerVgain).withKA(kSteerAgain)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
     // PID Values for the Drive Motors
-    private static final Slot0Configs driveGains = new Slot0Configs()
-            .withKP(0.1).withKI(0).withKD(0)
-            .withKS(0).withKV(0.125);
+    public static final Slot0Configs driveGains = new Slot0Configs()
+            .withKP(kDrivePgain).withKI(kDriveIgain).withKD(kDriveDgain)
+            .withKS(kDriveSgain).withKV(kDriveVgain).withKA(kDriveAgain);
 
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
