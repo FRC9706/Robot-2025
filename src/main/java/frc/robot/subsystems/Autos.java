@@ -29,19 +29,16 @@ public class Autos extends SubsystemBase {
         return mInstance;
     }
 
-    // public Autos() {
-    //     autofact = new AutoFactory(() -> 
-    //     drivetrain.getState().Pose, 
-    //     pose -> {}, 
-    //     followTrajectory -> {}, 
-    //     false, 
-    //     drivetrain);
-    // }
+    public Autos() {
+        AutoFactory Autofac = new AutoFactory(() -> 
+        drivetrain.getState().Pose, 
+        drivetrain::resetPose, 
+        drivetrain::followTrajectory, 
+        false, 
+        drivetrain);
+    }
 
-    // public void yAndrewTraj() {
-    // Command myAndrewTraj = autofact.trajectoryCmd("PGB1.traj");
-    // }
-    
+
     // public AutoRoutine A1(String name) {
     //     AutoRoutine routine = autofact.newRoutine(name);
     //     AutoTrajectory GoToReef = routine.trajectory(name, 0);
