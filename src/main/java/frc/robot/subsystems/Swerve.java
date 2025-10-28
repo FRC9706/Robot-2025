@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DetectorConstants;
 import frc.robot.Limelight;
 import frc.robot.LimelightHelpers;
+import frc.robot.Parameters;
 //import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 import frc.robot.Parameters.CTRESwerveDrivetrain;
@@ -115,9 +116,20 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
     }
 
-    private final PIDController xController = new PIDController(10, 0.0, 0);
-    private final PIDController yController = new PIDController(10, 0.0, 0);
-    private final PIDController thetaController = new PIDController(7.5, 0.0, 0);
+    private final PIDController xController = new PIDController(Parameters.kDrivePgain, 
+                                                                Parameters.kDriveIgain, 
+                                                                Parameters.kDriveDgain, 
+                                                                Parameters.kDriveSgain);
+
+    private final PIDController yController = new PIDController(Parameters.kDrivePgain, 
+                                                                Parameters.kDriveIgain, 
+                                                                Parameters.kDriveDgain, 
+                                                                Parameters.kDriveSgain);
+
+    private final PIDController thetaController = new PIDController(Parameters.kSteerPgain,
+                                                                    Parameters.kSteerIgain,
+                                                                    Parameters.kSteerDgain,
+                                                                    Parameters.kSteerSgain);
 
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
