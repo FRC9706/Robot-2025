@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.DetectorConstants;
+import frc.robot.LimelightHelpers;
 import frc.robot.Parameters;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -20,6 +22,7 @@ public class Autos extends SubsystemBase {
 
     // private final AutoFactory autofact;
     private final Swerve drivetrain = Parameters.createDrivetrain();
+    private final AutoFactory autoFac;
     private final Arm arm = Arm.getInstance();
     public static Autos mInstance = null;
     public static Autos getInstance() {
@@ -30,13 +33,66 @@ public class Autos extends SubsystemBase {
     }
 
     public Autos() {
-        AutoFactory Autofac = new AutoFactory(() -> 
+        autoFac = new AutoFactory(() -> 
         drivetrain.getState().Pose, 
         drivetrain::resetPose, 
         drivetrain::followTrajectory, 
         false, 
         drivetrain);
+
+        AutoRoutine autoRout = autoFac.newRoutine("scoreNdefend");
     }
+
+    public AutoRoutine scoreNdefend() {
+        // give this routine a very helpful and descriptive name as you can see
+        AutoRoutine autoRout = autoFac.newRoutine("andre");
+
+        // Load trajectories
+        AutoTrajectory andre = autoRout.trajectory("andre");
+        AutoTrajectory andrep2 = autoRout.trajectory("andrep2");
+
+        autoRout.active().onTrue(
+            Commands.sequence(
+                // reset odometry and run andre
+                andre.resetOdometry(),
+                andre.cmd()
+            ) 
+        );
+
+        // after andre is done, go to the april tag which should (hopefully) infront of you
+        andre.done().onTrue(Commands.sequence(
+        Commands.run(() -> 
+        
+        // Go to the april tag & move directly into it
+        drivetrain.goToAprilTag())
+            .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
+        drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
+        drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
+
+        // Get arm ready to shoot
+        Commands.waitSeconds(0.5),
+        Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor), drivetrain),
+        Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
+  
+        // Shoot and retract arm
+        Commands.waitSeconds(1),
+        Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
+        Commands.waitSeconds(0.5),
+        Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
+        Commands.runOnce(() -> Arm.goToPos(Parameters.retract)),
+
+        // Start andrep2 (the defending part)
+        andrep2.cmd()
+            )
+        );
+
+        // After andrep2 has finished, reset robot pos feild centric (press A)
+        andrep2.done().onTrue(Commands.runOnce(() -> drivetrain.resetPosFeildCentric()));
+
+        return autoRout;
+    }
+
+
 
 
     // public AutoRoutine A1(String name) {
