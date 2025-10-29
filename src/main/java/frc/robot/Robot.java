@@ -42,29 +42,29 @@ public class Robot extends TimedRobot {
   private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
   private final Autos autos = Autos.getInstance();
-  private static final String kDef = "GTFO";
-  private static final String kB1 = "PGB1";
-  private static final String kB2 = "PGB2";
-  private static final String kB3 = "PGB3";
-  private static final String kR1 = "PGR1";
-  private static final String kR2 = "PGR2";
-  private static final String kR3 = "PGR3";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  // private static final String kDef = "GTFO";
+  // private static final String kB1 = "PGB1";
+  // private static final String kB2 = "PGB2";
+  // private static final String kB3 = "PGB3";
+  // private static final String kR1 = "PGR1";
+  // private static final String kR2 = "PGR2";
+  // private static final String kR3 = "PGR3";
+  // private String m_autoSelected;
+  // private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(1);
 
   public Robot() {
     
-    m_chooser.setDefaultOption("GTFO", kDef);
-    m_chooser.addOption("BlueOuter", kB1);
-    m_chooser.addOption("BlueMiddle", kB2);
-    m_chooser.addOption("BlueInner", kB3);
-    m_chooser.addOption("RedOuter", kR1);
-    m_chooser.addOption("RedMiddle", kR2);
-    m_chooser.addOption("RedInner", kR3);
-    SmartDashboard.putData("Pick an auto, any auto:", m_chooser);
+    // m_chooser.setDefaultOption("GTFO", kDef);
+    // m_chooser.addOption("BlueOuter", kB1);
+    // m_chooser.addOption("BlueMiddle", kB2);
+    // m_chooser.addOption("BlueInner", kB3);
+    // m_chooser.addOption("RedOuter", kR1);
+    // m_chooser.addOption("RedMiddle", kR2);
+    // m_chooser.addOption("RedInner", kR3);
+    // SmartDashboard.putData("Pick an auto, any auto:", m_chooser);
 
     // Configure DogLog
     DogLog.setOptions(
@@ -100,6 +100,7 @@ public class Robot extends TimedRobot {
     );
       
 
+    // =============== Controller Bottons ===============
 
     driverController.x().onTrue(
       Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric()
@@ -121,77 +122,49 @@ public class Robot extends TimedRobot {
         )
     );
 
-  //   driverController.b().onTrue(
-  //     Commands.runOnce(() -> {
-  //         climb.climb();
-  //         climb2.climb2();
-  //     }, climb, climb2)
-  // );
-
     // driverController.y().whileTrue(
     //   Commands.run(() -> {
     //       drivetrain.goToAprilTag();
     //   }, drivetrain)
     //   //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
     // );
-
-    // driverController.y().onTrue(Commands.runOnce(() -> climb.goToRot(1)));
     
     driverController.b().onTrue(Commands.runOnce(() -> Climb.goToRotPlusOne()));
 
-    driverController.y().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.lowered)));
-   
+  // Arm control v2
+  
+  driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
+  driverController.povDown().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.lowered)));
+  driverController.povRight().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
+  driverController.povLeft().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabAl)));
 
-    
 
-  //   driverController.b().onTrue(
-  //     Commands.runOnce(() -> {
-  //         climb.goToRot(5);
-  //         climb2.goToRot2(5);
-  //     }, climb, climb2)
+    // // Arm control
+    // driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
+    // driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+    // driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
+    // driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+  
+
+  // Int/out control
+
+  // left bumper: intake coral
+  //  driverController.leftBumper().whileTrue(
+  //   Commands.sequence(
+  //     Commands.run(() -> Intout.set(Parameters.one))  // Run intake continuously
+  //    Commands.waitUntil(() -> !Intout.coralSwitch.get())  // Stop when the limit switch is triggered
+  // )).onFalse(
+  //   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
   // );
 
-    
-  // driverController.a().onTrue(Commands.runOnce(() -> climb.climb()));
-  // driverController.b().onTrue(Commands.runOnce(() -> climb2.climb2()));
-
-  // Arm stuff
-
-  // driverController.y().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
-  // driverController.b().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabAL)));
-  // driverController.a().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
-
-  
-    // Arm control
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
-    driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
-    driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
-
-    // driverController.leftTrigger().onTrue(Commands.print("test"));
-    // driverController.y().onTrue(Commands.runOnce(() -> arm.prepareForAlgae()));
-
-    // Int/out control
-
-// left bumper: intake coral
-//  driverController.leftBumper().whileTrue(
-//   Commands.sequence(
-//     Commands.run(() -> Intout.set(Parameters.one))  // Run intake continuously
-//    Commands.waitUntil(() -> !Intout.coralSwitch.get())  // Stop when the limit switch is triggered
-// )).onFalse(
-//   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
-// );
-
-// // right bumper: outtake coral
-// driverController.rightBumper().whileTrue(
-//   Commands.sequence(
-//     Commands.run(() -> Intout.set(-Parameters.one))  // Run outtak`e continuously
-//     Commands.waitUntil(() -> Intout.coralSwitch.get())  // Stop when the limit switch is triggered
-//   )).onFalse(
-//   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
-// );
-
-
+  // // right bumper: outtake coral
+  // driverController.rightBumper().whileTrue(
+  //   Commands.sequence(
+  //     Commands.run(() -> Intout.set(-Parameters.one))  // Run outtak`e continuously
+  //     Commands.waitUntil(() -> Intout.coralSwitch.get())  // Stop when the limit switch is triggered
+  //   )).onFalse(
+  //   Commands.runOnce(() -> Intout.set(0))  // Stop motor when button is released
+  // );
     
     // left bumber: intake algae
     driverController.leftBumper().whileTrue(
@@ -211,10 +184,6 @@ public class Robot extends TimedRobot {
         Commands.runOnce(() -> Intout.set(0))
       );
 
-    // // Climb control
-    // driverController.b().onTrue(Commands.runOnce(() -> climb.climb()));
-
-
   }
   @Override
   public void autonomousInit() {
@@ -231,46 +200,33 @@ public class Robot extends TimedRobot {
     // }
 
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
+    drivetrain.resetPosFeildCentric();
+    
+    // launch the auto
+    autos.scoreNdefend();
 
     // This code works on magic dont touch
     Commands.sequence(
-      Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
-      Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
+      // Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
+      // Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
 
-      Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
-          .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
-          drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
-          drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
+      // Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
+      //     .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
+      //     drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
+      //     drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
 
 
-      Commands.waitSeconds(0.5),
-      Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor), drivetrain),
-      Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
+      // Commands.waitSeconds(0.5),
+      // Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor), drivetrain),
+      // Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
 
-      Commands.waitSeconds(1),
-      Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
-      Commands.waitSeconds(0.5),
-      Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
-      Commands.runOnce(() -> Arm.goToPos(Parameters.retract))
+      // Commands.waitSeconds(1),
+      // Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
+      // Commands.waitSeconds(0.5),
+      // Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
+      // Commands.runOnce(() -> Arm.goToPos(Parameters.retract))
 
-      
-
-      // Move foward for 3 seconds
-      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      // .withVelocityX(-1)).withTimeout(0.5),
-      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      // .withVelocityX(0)).withTimeout(1),
-      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      // .withVelocityX(1)).withTimeout(0.5),
-      // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric()
-      // .withVelocityX(0)).withTimeout(1)
-
-      // // Out-take coral for 3 seconds
-      // Commands.runOnce(() -> Intout.set(Parameters.one)).withTimeout(3),
-      // // end the Out-take 
-      // Commands.runOnce(() -> Intout.set(0))
     ).schedule();
-    // Now, schedule the Taxi command
 }
 
     @Override
