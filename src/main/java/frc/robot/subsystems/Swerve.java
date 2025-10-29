@@ -37,7 +37,6 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
     // Rotation values to correctly flip field-relative controls for the driver
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
-    private final Swerve drivetrain = Parameters.createDrivetrain();
     private boolean hasAppliedOperatorPerspective = false;
     // private static final Pigeon2 pigeon = new Pigeon2(SwerveConstants.kPigeonId, "canivore");
 
@@ -115,11 +114,6 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
             DogLog.log("Swerve/Modules/" + moduleNames[i] + "/TurnTemperature", getModule(i).getSteerMotor().getDeviceTemp().getValueAsDouble());
         }
 
-    }
-
-    public void resetPosFeildCentric() {
-        drivetrain.resetRotation(Rotation2d.kZero);
-        drivetrain.resetRotation(Rotation2d.kZero);
     }
 
     private final PIDController xController = new PIDController(Parameters.kDrivePgain, 

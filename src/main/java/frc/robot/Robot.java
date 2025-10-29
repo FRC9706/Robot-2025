@@ -37,7 +37,7 @@ import frc.robot.subsystems.Autos;
 public class Robot extends TimedRobot {
 
   // initialize subsystems
-  private final Swerve drivetrain = Parameters.createDrivetrain();
+  public final static Swerve drivetrain = Parameters.createDrivetrain();
   private final Arm arm = Arm.getInstance();
   private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
@@ -200,10 +200,9 @@ public class Robot extends TimedRobot {
     // }
 
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
-    drivetrain.resetPosFeildCentric();
     
     // launch the auto
-    autos.scoreNdefend();
+    autos.Taxi();
 
     // This code works on magic dont touch
     Commands.sequence(
