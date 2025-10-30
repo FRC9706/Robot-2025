@@ -90,7 +90,7 @@ public class Autos extends SubsystemBase {
             );
     
             // After andrep2 has finished, reset robot pos feild centric (press A)
-            // andrep2.done().onTrue();
+            andrep2.done().onTrue(Commands.runOnce(() -> Swerve.resetPosFeildCentric()));
     
             return autoRout;
         }
