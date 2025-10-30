@@ -50,11 +50,14 @@ public class Autos extends SubsystemBase {
             // Load trajectories
             AutoTrajectory andre = autoRout.trajectory("andre");
             AutoTrajectory andrep2 = autoRout.trajectory("andrep2");
+
+            System.out.println("Loaded trajctories " + andre +  "and " + andrep2);
     
             autoRout.active().onTrue(
                 Commands.sequence(
                     // reset odometry and run andre
                     andre.resetOdometry(),
+                    Commands.runOnce(() -> System.out.println("RUNNING AUTO ROUTINE")),
                     andre.cmd()
                 ) 
             );

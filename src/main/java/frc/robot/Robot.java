@@ -202,7 +202,7 @@ public class Robot extends TimedRobot {
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
     
     // launch the auto
-    autos.Taxi();
+    autos.scoreNdefend().cmd().schedule();
 
     // This code works on magic dont touch
     Commands.sequence(
