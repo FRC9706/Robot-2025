@@ -28,6 +28,7 @@ import frc.robot.DetectorConstants;
 import frc.robot.Limelight;
 import frc.robot.LimelightHelpers;
 import frc.robot.Parameters;
+import frc.robot.Robot;
 //import frc.robot.LimelightHelpers;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 import frc.robot.Parameters.CTRESwerveDrivetrain;
@@ -114,6 +115,11 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
             DogLog.log("Swerve/Modules/" + moduleNames[i] + "/TurnTemperature", getModule(i).getSteerMotor().getDeviceTemp().getValueAsDouble());
         }
 
+    }
+
+    public void resetPosFeildCentricTeleOP() { // FOR TELEOP ONLY
+        Robot.drivetrain.resetRotation(Rotation2d.kZero);
+        Robot.drivetrain.resetRotation(Rotation2d.k180deg);
     }
 
     private final PIDController xController = new PIDController(Parameters.kDrivePgain, 
