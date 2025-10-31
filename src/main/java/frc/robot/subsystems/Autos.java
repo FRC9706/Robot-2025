@@ -43,20 +43,21 @@ public class Autos extends SubsystemBase {
             drivetrain);
         }
     
-        public AutoRoutine scoreNdefend() {
+        public AutoRoutine scoreNdefendMid(String name, String name2) {
             // give this routine a very helpful and descriptive name as you can see
             AutoRoutine autoRout = autoFac.newRoutine("andre");
     
             // Load trajectories
-            AutoTrajectory andre = autoRout.trajectory("andre");
-            AutoTrajectory andrep2 = autoRout.trajectory("andrep2");
+            AutoTrajectory andre = autoRout.trajectory(name);
+            AutoTrajectory andrep2 = autoRout.trajectory(name2);
 
-            System.out.println("Loaded trajctories " + andre +  "and " + andrep2);
+            System.out.println("Loaded trajctories " + name +  "and " + name2);
     
             autoRout.active().onTrue(
                 Commands.sequence(
                     // reset odometry and run andre
                     andre.resetOdometry(),
+                    Commands.runOnce(() -> drivetrain.resetPosFeildCentric()),
                     Commands.runOnce(() -> System.out.println("RUNNING AUTO ROUTINE")),
                     andre.cmd()
                 ) 
@@ -90,7 +91,7 @@ public class Autos extends SubsystemBase {
             );
     
             // After andrep2 has finished, reset robot pos feild centric (press A)
-            andrep2.done().onTrue(Commands.runOnce(() -> Swerve.resetPosFeildCentric()));
+            andrep2.done().onTrue(Commands.runOnce(() -> drivetrain.resetPosFeildCentric()));
     
             return autoRout;
         }
