@@ -117,28 +117,24 @@ public class Swerve extends CTRESwerveDrivetrain implements Subsystem {
 
     }
 
-    public void resetPosFeildCentric() {
+    public void resetPosFeildCentricTeleOP() { // FOR TELEOP ONLY
         Robot.drivetrain.resetRotation(Rotation2d.k180deg);
-        Robot.drivetrain.resetRotation(Rotation2d.kZero);
     }
 
-    private final PIDController xController = new PIDController(
-        Parameters.kDrivePgain, 
-        Parameters.kDriveIgain, 
-        Parameters.kDriveDgain, 
-        Parameters.kDriveSgain);
+    private final PIDController xController = new PIDController(Parameters.kDrivePgain, 
+                                                                Parameters.kDriveIgain, 
+                                                                Parameters.kDriveDgain, 
+                                                                Parameters.kDriveSgain);
 
-    private final PIDController yController = new PIDController(
-        Parameters.kDrivePgain, 
-        Parameters.kDriveIgain, 
-        Parameters.kDriveDgain, 
-        Parameters.kDriveSgain);
+    private final PIDController yController = new PIDController(Parameters.kDrivePgain, 
+                                                                Parameters.kDriveIgain, 
+                                                                Parameters.kDriveDgain, 
+                                                                Parameters.kDriveSgain);
 
-    private final PIDController thetaController = new PIDController(
-        Parameters.kSteerPgain,
-        Parameters.kSteerIgain,
-        Parameters.kSteerDgain,
-        Parameters.kSteerSgain);
+    private final PIDController thetaController = new PIDController(Parameters.kSteerPgain,
+                                                                    Parameters.kSteerIgain,
+                                                                    Parameters.kSteerDgain,
+                                                                    Parameters.kSteerSgain);
 
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot

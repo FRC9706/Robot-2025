@@ -60,7 +60,7 @@ public class Parameters {
         public static final boolean kMotorReversed = false;
         // literally the dumbest constant I have ever had to code
         public static final double one = kMotorReversed ? -1 : 1;
-        public static final double oneHalfed = kMotorReversed ? -0.5 : 0.5;
+        public static final double oneidk = kMotorReversed ? -0.7 : 0.7;
         public static final int kShootDuration = 2;
         public static final int kIntakeDuration = 2;
         public static final int kCoralLimitSwitchID = 8;
@@ -76,7 +76,7 @@ public class Parameters {
         public static final int kArmMotorID = 14;
         public static final double mxOut = 0.5;
         public static final double minOut = -0.5;
-        public static final double shootCor = -27;
+        public static final double shootCor = -24;
         public static final double grabCor = -57;
         public static final double holdAl = -4;
         public static final double grabAl = -39;

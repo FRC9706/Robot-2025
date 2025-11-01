@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,35 +44,33 @@ public class Autos extends SubsystemBase {
             drivetrain);
         }
     
-        public AutoRoutine scoreNdefendMid(String name, String name2) {
+        public AutoRoutine scoreNdefend() {
             // give this routine a very helpful and descriptive name as you can see
             AutoRoutine autoRout = autoFac.newRoutine("andre");
     
             // Load trajectories
-            AutoTrajectory andre = autoRout.trajectory(name);
-            AutoTrajectory andrep2 = autoRout.trajectory(name2);
+            AutoTrajectory andre = autoRout.trajectory("andreRight");
+            AutoTrajectory andrep2 = autoRout.trajectory("andreRightP2");
 
-            System.out.println("Loaded trajctories " + name +  "and " + name2);
+            System.out.println("Loaded trajctories " + andre +  "and " + andrep2);
     
             autoRout.active().onTrue(
                 Commands.sequence(
                     // reset odometry and run andre
                     andre.resetOdometry(),
-                    Commands.runOnce(() -> drivetrain.resetPosFeildCentric()),
-                    Commands.runOnce(() -> System.out.println("RUNNING AUTO ROUTINE")),
                     andre.cmd()
                 ) 
             );
     
             // after andre is done, go to the april tag which should (hopefully) infront of you
             andre.done().onTrue(Commands.sequence(
-            Commands.run(() -> 
+            // Commands.run(() -> 
             
             // Go to the april tag & move directly into it
-            drivetrain.goToAprilTag())
-                .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
-            drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
-            drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
+            // drivetrain.goToAprilTag())
+            //     .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
+            // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(1),
+            // drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0)).withTimeout(0),
     
             // Get arm ready to shoot
             Commands.waitSeconds(0.5),
@@ -79,19 +78,24 @@ public class Autos extends SubsystemBase {
             Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
       
             // Shoot and retract arm
-            Commands.waitSeconds(1),
+            Commands.waitSeconds(2),
+            // Commands.runOnce(() -> Intout.set(3000), Intout.getInstance()), // For experimental velocity control
             Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
-            Commands.waitSeconds(0.5),
-            Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
+            Commands.waitSeconds(1),
+            Commands.runOnce(() -> Intout.stopMotor(), Intout.getInstance()),
             Commands.runOnce(() -> Arm.goToPos(Parameters.retract)),
+            Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.retract) < 0.5),
+            Commands.runOnce(() -> System.out.println("About to retreat bro")),
     
             // Start andrep2 (the defending part)
+            andrep2.resetOdometry(),
             andrep2.cmd()
-                )
-            );
+            )
+            
+        );
     
             // After andrep2 has finished, reset robot pos feild centric (press A)
-            andrep2.done().onTrue(Commands.runOnce(() -> drivetrain.resetPosFeildCentric()));
+            // andrep2.done().onTrue();
     
             return autoRout;
         }

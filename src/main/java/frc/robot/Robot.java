@@ -139,11 +139,11 @@ public class Robot extends TimedRobot {
   driverController.povLeft().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabAl)));
 
 
-    // // Arm control
-    // driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
-    // driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
-    // driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
-    // driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+    // Arm control
+    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
+    driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
+    driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
   
 
   // Int/out control
@@ -202,8 +202,7 @@ public class Robot extends TimedRobot {
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
     
     // launch the auto
-    autos.scoreNdefendMid("andreRed", "andreRedp2").cmd().schedule();
-
+    autos.scoreNdefend().cmd().schedule();
     // This code works on magic dont touch
     Commands.sequence(
       // Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
