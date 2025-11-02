@@ -77,12 +77,12 @@ public class Autos extends SubsystemBase {
             Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor), drivetrain),
             Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.shootCor) < 0.5),
       
-            // Shoot and retract arm
+            // Shoot
             Commands.waitSeconds(2),
-            // Commands.runOnce(() -> Intout.set(3000), Intout.getInstance()), // For experimental velocity control
-            Commands.runOnce(() -> Intout.set(-Parameters.one), Intout.getInstance()),
-            Commands.waitSeconds(1),
-            Commands.runOnce(() -> Intout.stopMotor(), Intout.getInstance()),
+            Commands.runOnce(() -> Intout.goToPos(20), Intout.getInstance()),
+            Commands.waitUntil(Intout::atTarget),
+
+            // Arm move back and robot goes back
             Commands.runOnce(() -> Arm.goToPos(Parameters.retract)),
             Commands.waitUntil(() -> Math.abs(Arm.getPos() - Parameters.retract) < 0.5),
             Commands.runOnce(() -> System.out.println("About to retreat bro")),
