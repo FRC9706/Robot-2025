@@ -1,20 +1,18 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import frc.robot.Parameters;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Commands;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Parameters;
 
 public class Intout extends SubsystemBase {
     private final static SparkMax intout = new SparkMax(Parameters.kIntakeMotorID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -33,6 +31,9 @@ public class Intout extends SubsystemBase {
     }
 
     public Intout() {
+        // reset to fac defaults?
+        intout.configure(new SparkMaxConfig(), ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
         encoder
         .setPosition(0);
 
@@ -56,69 +57,56 @@ public class Intout extends SubsystemBase {
         .d(0)
         .outputRange(-1, 1)
         // Set PID values for velocity control in slot 1
-        .p(1, ClosedLoopSlot.kSlot1)
+        .p(0.05, ClosedLoopSlot.kSlot1)
         .i(0, ClosedLoopSlot.kSlot1)
         .d(0, ClosedLoopSlot.kSlot1)
         .velocityFF(Parameters.velFF, ClosedLoopSlot.kSlot1)
         .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
-
+        
         intout.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    public static void set(double targetVel) {
-        // CLcontroller.setReference(targetVel, ControlType.kVelocity);
-        intout.set(targetVel);
-    }
+    private static double currentTarg = 0;
 
     public static void stopMotor() {
         intout.stopMotor();
+        currentTarg = 0;
     }
 
-    public static void outtake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(Parameters.one)), 
-            Commands.waitSeconds(Parameters.kShootDuration), 
-            Commands.runOnce(() -> intout.set(0))
-        );
+    public static void goToPos(double targPos) {
+        CLcontroller.setReference(targPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        currentTarg = targPos;
     }
 
-    public static void intake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(-Parameters.one)), 
-            Commands.waitSeconds(Parameters.kIntakeDuration), 
-            Commands.runOnce(() -> intout.set(0))
-        );
+    public static double getTargetPos() {
+        return currentTarg;
     }
 
-    public static void AutoCoralOuttake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(Parameters.one)), 
-            Commands.waitUntil(() -> !coralSwitch.get()), 
-            Commands.runOnce(() -> intout.set(0))
-        );
+    public static double getPos() {
+        double position = intout.getEncoder().getPosition();
+            return position;
     }
 
-    public static void AutoCoralIntake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(-Parameters.one)), 
-            Commands.waitUntil(() -> coralSwitch.get()), 
-            Commands.runOnce(() -> intout.set(0))
-        );
+    public static boolean atTarget() {
+        // Only check if a target has been set (and isn't zero)
+        if (getTargetPos() != 0) {
+            System.out.println("No target set!");
+        }
+        return Math.abs(getPos() - getTargetPos()) < 0.5 && getTargetPos() != 0;
     }
 
-    public static void AutoAlgaeIntake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(-Parameters.one)), 
-            Commands.waitUntil(() -> algaeSwitch.get()), 
-            Commands.runOnce(() -> intout.set(0))
-        );
+    public static void set(double speed) {
+        // CLcontroller.setReference(targetVel, ControlType.kVelocity);
+        intout.set(speed);
     }
 
-    public static void AutoAlgaeOuttake() {
-        Commands.sequence(
-            Commands.runOnce(() -> intout.set(Parameters.one)), 
-            Commands.waitUntil(() -> !algaeSwitch.get()), 
-            Commands.runOnce(() -> intout.set(0))
-        );
-    }
+    @Override
+    public void periodic() {
+        double error = Math.abs(getPos() - currentTarg);
+        if (error < 0.5 && currentTarg != 0) {
+            // Stop motor once target reached
+            intout.stopMotor();
+            encoder.setPosition(0);  // Zero encoder position after target reached
+        }
+    }    
 }
