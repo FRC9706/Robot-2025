@@ -23,11 +23,11 @@ public class Limelight {
     // ------------------------------
     // Centralized calibration parameters
     // ------------------------------
-    public static final String LIMELIGHT_NAME = "limelight"; // Set according to your camera name on network tables
-    public static final double[] ROBOT_TO_TAG_TRANSLATION_INCHES = {0.0, 0.0, 0.0}; // Your physical offsets (adjust from measurements)
-    public static final double TAG_PITCH_DEGREES = 0.0; // Adjust if your mounting pitch differs
-    public static final double TAG_YAW_DEGREES = 0.0;   // Adjust for yaw offset if needed
-    public static final double TAG_ROLL_DEGREES = 0.0;  // Adjust for roll offset if needed
+    public static final String LIMELIGHT_NAME = "limelight";
+    public static final double[] ROBOT_TO_TAG_TRANSLATION_INCHES = {12.71654, 0.0, 8.30708661};
+    public static final double TAG_PITCH_DEGREES = 10.9;
+    public static final double TAG_YAW_DEGREES = 0.0;
+    public static final double TAG_ROLL_DEGREES = 0.0;
 
     // ------------------------------
     // Constants for pose filtering (port from multi-camera system, simplified to single camera)

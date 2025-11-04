@@ -18,10 +18,11 @@ public class Parameters {
 
         public static final int AutoOuttakeWaitTime = 2; // seconds after outtaake before next segment
 
-        // CLIMB
+        // Swerve constants n stuff (Used to say climb here)
 
         public static final double kStatorCurrent = 60;
         public static final double kSupplyCurrent = 40;
+        public static final double kDriveCurrent = 40;
 
         public static final CurrentLimitsConfigs currentConfigs = 
                 new CurrentLimitsConfigs()
@@ -144,7 +145,7 @@ public class Parameters {
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
-                            .withStatorCurrentLimit(Amps.of(40))
+                            .withStatorCurrentLimit(Amps.of(kDriveCurrent))
                             .withStatorCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
 
