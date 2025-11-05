@@ -19,7 +19,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-// previous failed fix counter: 14 different people - NAV FIXED IT LETS GODGHDSKJFDASJFGDSjfgdskfdskfs
+// previous failed fix counter: 14 different people - its fixed now btw
 
 public class Autos extends SubsystemBase {
 
