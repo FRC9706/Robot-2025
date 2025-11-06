@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
     
 
     // Teleop Speed Multipliers. Percentages of the max speed. 
-    double translationSpeedMultiplier = 0.5;
+    double translationSpeedMultiplier = 1;
     double controllerDeadband = 0;
 
     new Rotation2d();
@@ -102,12 +102,12 @@ public class Robot extends TimedRobot {
 
     // =============== Controller Bottons ===============
 
-    driverController.x().onTrue(
-      Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric()
-      .withRotationalRate(0)
-      .withVelocityX(0))
-      )
-    );
+    // driverController.x().onTrue(
+    //   Commands.runOnce(() -> drivetrain.setControl(new SwerveRequest.RobotCentric()
+    //   .withRotationalRate(0)
+    //   .withVelocityX(0))
+    //   )
+    // );
 
     // Button to reset the field-relative rotation to 0 degrees. Face the robot away
     // from the driver station wall when pressing.
@@ -122,28 +122,28 @@ public class Robot extends TimedRobot {
         )
     );
 
-    // driverController.y().whileTrue(
-    //   Commands.run(() -> {
-    //       drivetrain.goToAprilTag();
-    //   }, drivetrain)
-    //   //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
-    // );
+    driverController.x().whileTrue(
+      Commands.run(() -> {
+          drivetrain.goToAprilTag();
+      }, drivetrain)
+      //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
+    );
     
-    driverController.b().onTrue(Commands.runOnce(() -> Climb.goToRotPlusOne()));
+    driverController.y().onTrue(Commands.runOnce(() -> Climb.goToRotPlusOne()));
 
   // Arm control v2
   
-  driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
-  driverController.povDown().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.lowered)));
-  driverController.povRight().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
-  driverController.povLeft().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabAl)));
+  // driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
+  driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor)));
+  driverController.povDown().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
+  // driverController.povLeft().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
 
 
-    // Arm control
-    driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
-    driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
-    driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
-    driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+  // Arm control
+  driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
+  driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
+  driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
+  driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
   
 
   // Int/out control
@@ -183,6 +183,7 @@ public class Robot extends TimedRobot {
       )).onFalse(
         Commands.runOnce(() -> Intout.set(0))
       );
+
 
   }
   @Override

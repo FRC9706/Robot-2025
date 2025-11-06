@@ -41,7 +41,7 @@ public class Intout extends SubsystemBase {
         .inverted(false);
 
         config
-        .idleMode(IdleMode.kCoast);
+        .idleMode(IdleMode.kBrake);
 
         config
         .smartCurrentLimit(60);

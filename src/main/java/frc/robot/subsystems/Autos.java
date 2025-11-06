@@ -79,7 +79,7 @@ public class Autos extends SubsystemBase {
       
             // Shoot
             Commands.waitSeconds(2),
-            Commands.runOnce(() -> Intout.goToPos(20), Intout.getInstance()),
+            Commands.runOnce(() -> Intout.goToPos(-2), Intout.getInstance()),
             Commands.waitUntil(Intout::atTarget),
 
             // Arm move back and robot goes back

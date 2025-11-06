@@ -202,6 +202,7 @@ public class Limelight {
             new Rotation3d(roll / count, pitch / count, yaw / count)
         );
     }
+    
 }
 
 // https://www.perplexity.ai/search/what-are-the-wpiib-vendor-dep-Y2soaulhQjGeHwKUJy8T_Q

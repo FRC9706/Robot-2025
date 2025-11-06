@@ -115,7 +115,7 @@ public class Climb extends SubsystemBase {
                 }
             }
         
-            static double addedRot = 12.9;
+            static double addedRot = 10;
         
             public static void goToRotPlusOne() {
                 double currentRot = getClimberPos();
@@ -124,7 +124,7 @@ public class Climb extends SubsystemBase {
             if ((climbMotor.getPosition().getValueAsDouble() < addedRot) && (Math.abs(currentRot - addedRot) > tolerance) && (Arm.getPos() < -40)) {
                 climbMotor.setControl(m_request.withPosition(addedRot));
             System.out.println("rot I just went to: " + addedRot);
-            addedRot += 0.2;
+            addedRot += 0.4;
             System.out.println("New rot I will go to on next button press: " + addedRot);
             rachetSafetyTriggered = false;
         } else {

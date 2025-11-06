@@ -20,9 +20,9 @@ public class Parameters {
 
         // Swerve constants n stuff (Used to say climb here)
 
-        public static final double kStatorCurrent = 60;
+        public static final double kStatorCurrent = 80;
         public static final double kSupplyCurrent = 40;
-        public static final double kDriveCurrent = 40;
+        public static final double kStatorDriveCurrent = 170;
 
         public static final CurrentLimitsConfigs currentConfigs = 
                 new CurrentLimitsConfigs()
@@ -78,7 +78,7 @@ public class Parameters {
         public static final double mxOut = 0.5;
         public static final double minOut = -0.5;
         public static final double shootCor = -24;
-        public static final double grabCor = -57;
+        public static final double grabCor = -53;
         public static final double holdAl = -4;
         public static final double grabAl = -39;
         public static final double lowered = -45;
@@ -145,7 +145,7 @@ public class Parameters {
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
             .withCurrentLimits(
                     new CurrentLimitsConfigs()
-                            .withStatorCurrentLimit(Amps.of(kDriveCurrent))
+                            .withStatorCurrentLimit(Amps.of(kStatorDriveCurrent))
                             .withStatorCurrentLimitEnable(true));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
 
