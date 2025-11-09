@@ -2,12 +2,17 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import static edu.wpi.first.units.Units.FeetPerSecond;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import com.revrobotics.spark.ClosedLoopSlot;
 //import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.hal.simulation.DriverStationDataJNI;
@@ -42,29 +47,27 @@ public class Robot extends TimedRobot {
   private final Intout intout = new Intout();
   private final Climb climb = Climb.getInstance();
   private final Autos autos = Autos.getInstance();
-  // private static final String kDef = "GTFO";
-  // private static final String kB1 = "PGB1";
-  // private static final String kB2 = "PGB2";
-  // private static final String kB3 = "PGB3";
-  // private static final String kR1 = "PGR1";
-  // private static final String kR2 = "PGR2";
-  // private static final String kR3 = "PGR3";
-  // private String m_autoSelected;
-  // private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private static final String kB1 = "andreB";
+  private static final String kB2 = "andreBRight";
+  private static final String kB3 = "andreBLeft";
+  private static final String kR1 = "andre";
+  private static final String kR2 = "andreRight";
+  private static final String kR3 = "andreLeft";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   // Driver Controller
   private CommandXboxController driverController = new CommandXboxController(1);
 
   public Robot() {
-    
-    // m_chooser.setDefaultOption("GTFO", kDef);
-    // m_chooser.addOption("BlueOuter", kB1);
-    // m_chooser.addOption("BlueMiddle", kB2);
-    // m_chooser.addOption("BlueInner", kB3);
-    // m_chooser.addOption("RedOuter", kR1);
-    // m_chooser.addOption("RedMiddle", kR2);
-    // m_chooser.addOption("RedInner", kR3);
-    // SmartDashboard.putData("Pick an auto, any auto:", m_chooser);
+
+    m_chooser.addOption("BlueMiddle", kB1);
+    m_chooser.addOption("BlueRight", kB2);
+    m_chooser.addOption("BlueLeft", kB3);
+    m_chooser.addOption("RedMiddle", kR1);
+    m_chooser.addOption("RedRight", kR2);
+    m_chooser.addOption("RedLeft", kR3);
+    SmartDashboard.putData("Pick an auto, any auto:", m_chooser);
 
     // Configure DogLog
     DogLog.setOptions(
@@ -122,25 +125,25 @@ public class Robot extends TimedRobot {
         )
     );
 
-    driverController.x().whileTrue(
-      Commands.run(() -> {
-          drivetrain.goToAprilTag();
-      }, drivetrain)
-      //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
-    );
+    // driverController.x().whileTrue(
+    //   Commands.run(() -> {
+    //       drivetrain.goToAprilTag();
+    //   }, drivetrain)
+    //   //  .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 2)
+    // );
     
     driverController.y().onTrue(Commands.runOnce(() -> Climb.goToRotPlusOne()));
 
   // Arm control v2
   
-  // driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
+  driverController.povRight().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.retract)));
   driverController.povUp().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.shootCor)));
   driverController.povDown().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
   // driverController.povLeft().onTrue(Commands.runOnce(() -> Arm.goToPos(Parameters.grabCor)));
 
 
   // Arm control
-  driverController.leftTrigger().onTrue(Commands.runOnce(() -> arm.set(0.5)));
+  driverController.leftTrigger().whileTrue(Commands.runOnce(() -> arm.cMove(0.5)));
   driverController.leftTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
   driverController.rightTrigger().onTrue(Commands.runOnce(() -> arm.set(-0.75)));
   driverController.rightTrigger().onFalse(Commands.runOnce(() -> arm.set(0)));
@@ -186,28 +189,48 @@ public class Robot extends TimedRobot {
 
 
   }
+  AutoFactory autoFac = new AutoFactory(() -> 
+            drivetrain.getState().Pose, 
+            drivetrain::resetPose, 
+            drivetrain::followTrajectory, 
+            false, 
+            drivetrain);
+                AutoRoutine autoRout = autoFac.newRoutine("andre");
+  AutoTrajectory andreB =autoRout.trajectory("andreB");  
+  AutoTrajectory andreBP2 =autoRout.trajectory("andreBP2");  
+  AutoTrajectory andreBRight =autoRout.trajectory("andreBRight");  
+  AutoTrajectory andreBRightP2 =autoRout.trajectory("andreBRightP2");  
+  AutoTrajectory andreBLeft =autoRout.trajectory("andreBLeft");  
+  AutoTrajectory andreBLeftP2 =autoRout.trajectory("andreBLeftP2");  
+  AutoTrajectory andre =autoRout.trajectory("andre");  
+  AutoTrajectory andreP2 =autoRout.trajectory("andreP2");  
+  AutoTrajectory andreRight =autoRout.trajectory("andreRight");  
+  AutoTrajectory andreRightP2 =autoRout.trajectory("andreRightP2");  
+  AutoTrajectory andreLeft =autoRout.trajectory("andreLeft");  
+  AutoTrajectory andreLeftP2 =autoRout.trajectory("andreLeftP2");  
   @Override
   public void autonomousInit() {
+    
     // Optional: Select an autonomous routine based on a chooser, if you decide to use it
-    // m_autoSelected = m_chooser.getSelected();
-    // switch (m_autoSelected) {
-    //     case kDef: autos.GTFO().cmd().schedule(); break;
-    //     case kB1: autos.A1(kB1).cmd().schedule(); break;
-    //     case kB2: autos.A2(kB2).cmd().schedule(); break;
-    //     case kB3: autos.A3(kB3).cmd().schedule(); break;
-    //     case kR1: autos.A1(kR1).cmd().schedule(); break;
-    //     case kR2: autos.A2(kR2).cmd().schedule(); break;
-    //     case kR3: autos.A3(kR3).cmd().schedule(); break;
-    // }
+    m_autoSelected = m_chooser.getSelected();
+    switch (m_autoSelected) {
+        case kB1: autos.scoreNdefend(autoRout, andreB, andreBP2).cmd().schedule(); break;
+        case kB2: autos.scoreNdefend(autoRout, andreBRight, andreBRightP2).cmd().schedule(); break;
+        case kB3: autos.scoreNdefend(autoRout, andreBLeft, andreBLeftP2).cmd().schedule(); break;
+        case kR1: autos.scoreNdefend(autoRout, andre, andreP2).cmd().schedule(); break;
+        case kR2: autos.scoreNdefend(autoRout, andreRight, andreRightP2).cmd().schedule(); break;
+        case kR3: autos.scoreNdefend(autoRout, andreLeft, andreLeftP2).cmd().schedule(); break;
+    }
 
     // Ensure the drivetrain is reset to a neutral state to prevent any conflicts
     
     // launch the auto
-    autos.scoreNdefend().cmd().schedule();
+    // autos.scoreNdefend().cmd().schedule();
     // This code works on magic dont touch
-    Commands.sequence(
-      // Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
-      // Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
+  //  Commands.sequence(
+  //     Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.kZero), drivetrain),
+  //     Commands.runOnce(() -> drivetrain.resetRotation(Rotation2d.k180deg), drivetrain),
+  //     drivetrain.applyRequest(() -> new SwerveRequest.RobotCentric().withVelocityX(0.5)).withTimeout(5)
 
       // Commands.run(() -> drivetrain.goToAprilTag(), drivetrain)
       //     .until(() -> LimelightHelpers.getTA(DetectorConstants.kLimelightName) >= 8.9),
@@ -225,7 +248,7 @@ public class Robot extends TimedRobot {
       // Commands.runOnce(() -> Intout.set(0), Intout.getInstance()),
       // Commands.runOnce(() -> Arm.goToPos(Parameters.retract))
 
-    ).schedule();
+  // ).schedule();
 }
 
     @Override
@@ -246,7 +269,7 @@ public class Robot extends TimedRobot {
 
       @Override
   public void robotInit() { 
-    
+    SignalLogger.stop(); 
   }
 
   @Override

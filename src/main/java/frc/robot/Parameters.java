@@ -78,7 +78,7 @@ public class Parameters {
         public static final double mxOut = 0.5;
         public static final double minOut = -0.5;
         public static final double shootCor = -24;
-        public static final double grabCor = -53;
+        public static final double grabCor = -57;
         public static final double holdAl = -4;
         public static final double grabAl = -39;
         public static final double lowered = -45;

@@ -115,7 +115,7 @@ public class Climb extends SubsystemBase {
                 }
             }
         
-            static double addedRot = 10;
+            static double addedRot = 7.6;
         
             public static void goToRotPlusOne() {
                 double currentRot = getClimberPos();

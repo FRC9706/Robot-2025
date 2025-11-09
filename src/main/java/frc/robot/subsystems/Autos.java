@@ -24,7 +24,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 public class Autos extends SubsystemBase {
 
     // private final AutoFactory autofact;
-        private final AutoFactory autoFac;
         private final Swerve drivetrain = Robot.drivetrain;
         private final Arm arm = Arm.getInstance();
         public static Autos mInstance = null;
@@ -36,22 +35,14 @@ public class Autos extends SubsystemBase {
         }
     
         public Autos() {
-            autoFac = new AutoFactory(() -> 
-            drivetrain.getState().Pose, 
-            drivetrain::resetPose, 
-            drivetrain::followTrajectory, 
-            false, 
-            drivetrain);
+            
         }
     
-        public AutoRoutine scoreNdefend() {
+        public AutoRoutine scoreNdefend(AutoRoutine autoRout, AutoTrajectory andre, AutoTrajectory andrep2) {
             // give this routine a very helpful and descriptive name as you can see
-            AutoRoutine autoRout = autoFac.newRoutine("andre");
     
             // Load trajectories
-            AutoTrajectory andre = autoRout.trajectory("andreRight");
-            AutoTrajectory andrep2 = autoRout.trajectory("andreRightP2");
-
+            
             System.out.println("Loaded trajctories " + andre +  "and " + andrep2);
     
             autoRout.active().onTrue(

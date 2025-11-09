@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         encoder
-        .setPosition(0);
+        .setPosition(-6.786);
 
         config
         .inverted(false);
@@ -66,8 +66,22 @@ public class Arm extends SubsystemBase {
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
+    public boolean isOverLim = false;
+    public boolean isMoving = false;
+
     public static void goToPos(double targPos) {
         CLcontroller.setReference(targPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void cMove(double sped) {
+        if (!isOverLim) {
+            motor.set(sped);
+            isMoving = true;
+        } else {
+            System.out.println("STOP MOVING THE ARM ANDRE");
+            motor.stopMotor();
+            isMoving = false;
+        }
     }
 
     public static double getPos() {
@@ -106,4 +120,17 @@ public class Arm extends SubsystemBase {
     // public void AutoGoUp() {
     //     setTargetPos(Parameters.kArmPos2);
     // }
+
+    @Override
+    public void periodic() {
+        if ((Math.abs(getPos())) < 10) {
+            if (isMoving) {
+            motor.stopMotor();
+            isMoving = false;
+            }
+            isOverLim = true;
+        } else {
+            isOverLim = false;
+        }
+    }
 }
