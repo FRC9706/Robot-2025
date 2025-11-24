@@ -189,7 +189,7 @@ public class Robot extends TimedRobot {
 
 
   }
-  AutoFactory autoFac = new AutoFactory(() -> 
+  public static AutoFactory autoFac = new AutoFactory(() -> 
             drivetrain.getState().Pose, 
             drivetrain::resetPose, 
             drivetrain::followTrajectory, 

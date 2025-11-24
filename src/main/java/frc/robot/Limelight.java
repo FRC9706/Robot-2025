@@ -21,7 +21,7 @@ public class Limelight {
     private final static NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
 
     // ------------------------------
-    // Centralized calibration parameters
+    // calibration parameters
     // ------------------------------
     public static final String LIMELIGHT_NAME = "limelight";
     public static final double[] ROBOT_TO_TAG_TRANSLATION_INCHES = {12.71654, 0.0, 8.30708661};
@@ -30,7 +30,7 @@ public class Limelight {
     public static final double TAG_ROLL_DEGREES = 0.0;
 
     // ------------------------------
-    // Constants for pose filtering (port from multi-camera system, simplified to single camera)
+    // Constants for pose filtering
     // ------------------------------
     public static final double MAX_AMBIGUITY = 0.3;        // Max ambiguity to accept pose
     public static final double MAX_Z_ERROR = 0.75;         // Max vertical error in meters
@@ -204,5 +204,3 @@ public class Limelight {
     }
     
 }
-
-// https://www.perplexity.ai/search/what-are-the-wpiib-vendor-dep-Y2soaulhQjGeHwKUJy8T_Q

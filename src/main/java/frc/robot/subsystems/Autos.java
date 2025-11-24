@@ -40,7 +40,6 @@ public class Autos extends SubsystemBase {
     
         public AutoRoutine scoreNdefend(AutoRoutine autoRout, AutoTrajectory andre, AutoTrajectory andrep2) {
             // give this routine a very helpful and descriptive name as you can see
-    
             // Load trajectories
             
             System.out.println("Loaded trajctories " + andre +  "and " + andrep2);
